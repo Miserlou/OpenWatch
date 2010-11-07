@@ -1,0 +1,35 @@
+<form enctype="multipart/form-data" action="/MassSous/upload" method="post">
+    {% csrf_token %}
+	
+		<div class="fieldWrapper">
+		  <label for="rec_file">Recording file: </label>
+		  {{ form.rec_file}}
+		  {{ form.rec_file.errors }}
+	  </div>
+
+		<div class="fieldWrapper">
+		  <label for="name">Title: </label>
+		  {{ form.name}}
+		  {{ form.name.errors }}
+	  </div>
+
+		<div class="fieldWrapper">
+		  <label for="public_description">Public description: </label>
+		  {{ form.public_description}}
+		  {{ form.public_description.errors }}
+	  </div>
+
+		<div class="fieldWrapper">
+		  <label for="private_description">Private description: </label>
+		  {{ form.private_description}}
+		  {{ form.private_description.errors }}
+	  </div>
+    
+		<div class="fieldWrapper">
+		  <label for="location">Location: </label>
+		  {{ form.location}}
+		  {{ form.location.errors }}
+	  </div>
+<p><input type="submit" value="Upload!" /></p>
+</form>
+
