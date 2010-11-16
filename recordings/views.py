@@ -6,6 +6,9 @@ from django.shortcuts import get_object_or_404, render_to_response
 from datetime import datetime
 from openwatch.recordings.models import Recording, RecordingForm 
 
+def root(request):
+    return render_to_response('index.html', {})
+
 def upload(request):
     if request.method == 'POST': # If the form has been submitted...
         form = RecordingForm(request.POST, request.FILES) # A form bound to the POST data
