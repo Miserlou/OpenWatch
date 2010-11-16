@@ -3,8 +3,8 @@ from django.core.files.storage import FileSystemStorage
 from django.forms import ModelForm
 from datetime import datetime
 
-ulpath = 'MassSous/uploads/recordings/'
-attachment_file_storage = FileSystemStorage(location='/home/tuttle/MassSous/MassSous/uploads', base_url='recordings')
+ulpath = 'openwatch/uploads/recordings/'
+attachment_file_storage = FileSystemStorage(location='/home/tuttle/openwatch/openwatch/uploads', base_url='recordings')
 
 # Create your models here.
 class Recording(models.Model):

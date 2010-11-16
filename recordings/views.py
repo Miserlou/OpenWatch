@@ -4,7 +4,7 @@ from django.core.urlresolvers import reverse
 from django.template import RequestContext
 from django.shortcuts import get_object_or_404, render_to_response
 from datetime import datetime
-from MassSous.recordings.models import Recording, RecordingForm 
+from openwatch.recordings.models import Recording, RecordingForm 
 
 def upload(request):
     if request.method == 'POST': # If the form has been submitted...
@@ -14,7 +14,7 @@ def upload(request):
             # XXX: Check filetypes, etc
 
             form.save()
-            return HttpResponseRedirect('/MassSous/victory') # Redirect after POST
+            return HttpResponseRedirect('/openwatch/victory') # Redirect after POST
         else:
             print "Shiiiiit"
     else:

@@ -1,4 +1,4 @@
-# Django settings for MassSous project.
+# Django settings for openwatch project.
 import os
 
 DEBUG = True
@@ -77,7 +77,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
 )
 
-ROOT_URLCONF = 'MassSous.urls'
+ROOT_URLCONF = 'openwatch.urls'
 
 TEMPLATE_DIRS = (
     # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
@@ -96,5 +96,5 @@ INSTALLED_APPS = (
      'django.contrib.admin',
     # Uncomment the next line to enable admin documentation:
      'django.contrib.admindocs',
-     'MassSous.recordings'
+     'openwatch.recordings'
 )
