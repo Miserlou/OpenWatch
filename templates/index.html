@@ -40,14 +40,16 @@ Released   : 20100729
 	<!-- end #header -->
 	<div id="page">
 		<div id="content">
+            {% for post in content %}
 			<div class="post">
-				<h2 class="title"><a href="#">Welcome to OpenWatch</a></h2>
-				<p class="meta"><a href="#"><span class="date">Nov 16, 2010</span></a>&nbsp;<span class="links">
+				<h2 class="title"><a href="#">{{ post.name }}</a></h2>
+				<p class="meta"><a href="#"><span class="date">{{ post.date }}</span></a>&nbsp;<span class="links">
 				<div class="entry">
-					<p>Welcome to OpenWatch, a project to house citizen media of recordings of power use and abuse from around the world. OpenWatch is currently the web counterpart to the Cop Recorder application for Android, though it will be expanding greatly in the coming weeks. More soon.
+                    <p>{{ post.body }}
 					<p>
 				</div>
 			</div>
+            {% endfor %}
 		</div>
 		<!-- end #content -->
 		<div id="sidebar">

@@ -7,7 +7,9 @@ from datetime import datetime
 from openwatch.recordings.models import Recording, RecordingForm 
 
 def root(request):
-    return render_to_response('index.html', {})
+    default = {'date': 'Nov 16, 2010', 'body': 'Welcome to OpenWatch, a project to house citizen media of recordings of power use and abuse from around the world. OpenWatch is currently the web counterpart to the Cop Recorder application for Android, though it will be expanding greatly in the coming weeks. More soon. ', 'name': 'Welcome to OpenWatch'}
+    print default
+    return render_to_response('index.html', {'content': [default]})
 
 def upload(request):
     if request.method == 'POST': # If the form has been submitted...
