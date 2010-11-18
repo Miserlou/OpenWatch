@@ -1,4 +1,13 @@
-<form enctype="multipart/form-data" action="/openwatch/upload" method="post">
+{% extends "header.html" %}
+{% block bodyblock %}
+	<div id="page">
+		<div id="content">
+
+<div class="post">
+				<h2 class="title"><a href="#">Upload Media</a></h2>
+				<p class="meta"><a href="#"><span class="date">...</span></a>&nbsp;<span class="links">
+				<div class="entry">
+                    <p><form enctype="multipart/form-data" action="/openwatch/upload" method="post">
     {% csrf_token %}
 	
 		<div class="fieldWrapper">
@@ -32,4 +41,9 @@
 	  </div>
 <p><input type="submit" value="Upload!" /></p>
 </form>
-
+					<p>
+				</div>
+			</div>
+		</div>
+		<!-- end #content -->
+{% endblock %}
