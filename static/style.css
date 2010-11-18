@@ -150,6 +150,52 @@ a:hover {
 	color: #FFFFFF;
 }
 
+/* Input */
+
+#input-text {
+    background:none repeat scroll 0 0 #E7E7E7;
+    color:#B9ADAA;
+    font:12px Arial,Helvetica,sans-serif;
+    height:30px;
+    margin-right:10px;
+    padding:4px 5px 1px;
+    width:300px;
+}
+
+#id_name {
+    padding: 2px;
+}
+
+#id_public_description {
+    padding: 2px;
+    width: 300px;
+    height: 200px;
+    rows=10;
+    cols=10;
+}
+
+#id_private_description {
+    padding: 2px;
+    width: 300px;
+    height: 200px;
+}
+
+#id_location {
+    padding: 2px;
+    width: 300px;
+}
+
+#id_name {
+    padding: 2px;
+    width: 300px;
+}
+
+#id_rec_file {
+    padding: 2px;
+    width: 300px;
+}
+
+
 /* Menu */
 
 #menu {
