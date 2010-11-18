@@ -7,6 +7,7 @@ admin.autodiscover()
 urlpatterns = patterns('',
     # Example:
      (r'^openwatch/', include('openwatch.recordings.urls')),
+     (r'^upload/', 'openwatch.recordings.views.upload'),
 
     # Uncomment the admin/doc line below to enable admin documentation:
      (r'^admin/doc/', include('django.contrib.admindocs.urls')),

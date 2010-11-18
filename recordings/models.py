@@ -18,6 +18,10 @@ class Recording(models.Model):
     mimetype = models.CharField(max_length='500', blank=True)
     approved = models.BooleanField(default=False, blank=True)
 
+    def save(self):
+        #XXX: Move the shit to static if approved!
+        super(Recording, self).save()
+
 class RecordingForm(ModelForm):
     class Meta:
         model = Recording
