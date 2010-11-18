@@ -8,8 +8,9 @@ from openwatch.recordings.models import Recording, RecordingForm
 
 def root(request):
     default = {'date': 'Nov 16, 2010', 'body': 'Welcome to OpenWatch, a project to house citizen media of recordings of power use and abuse from around the world. OpenWatch is currently the web counterpart to the Cop Recorder application for Android, though it will be expanding greatly in the coming weeks. More soon. ', 'name': 'Welcome to OpenWatch'}
-    print default
-    return render_to_response('index.html', {'content': [default]})
+
+    featureset = Recording.objects.filter(featured=True).all().order_by('-date')
+    return render_to_response('index.html', {'content': [default], 'featured': list(featureset)[0:5], 'cat': 'main' })
 
 def upload(request):
     if request.method == 'POST': # If the form has been submitted...
@@ -25,9 +26,17 @@ def upload(request):
     else:
         form = RecordingForm() # An unbound form
 
+    featureset = Recording.objects.filter(featured=True).all().order_by('-date')
     return render_to_response('upload.html', {
         'form': form,
+        'featured': list(featureset)[0:5],
+        'cat': 'upload' 
     })
 
 def victory(request):
     return render_to_response('victory.html')
+
+def listall(request):
+    queryset = Recording.objects.filter(approved=True).all().order_by('-date')
+    featureset = Recording.objects.filter(featured=True).all().order_by('-date')
+    return render_to_response('listall.html', {'list': list(queryset), 'featured': list(featureset)[0:5], 'cat': 'media'})
