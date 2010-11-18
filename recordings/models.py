@@ -2,6 +2,7 @@ from django.db import models
 from django.core.files.storage import FileSystemStorage
 from django.forms import ModelForm
 from datetime import datetime
+from django import forms
 
 ulpath = 'openwatch/uploads/recordings/'
 attachment_file_storage = FileSystemStorage(location='/home/tuttle/openwatch/openwatch/uploads', base_url='recordings')
@@ -17,6 +18,7 @@ class Recording(models.Model):
     file_loc = models.CharField(max_length='500', blank=True)
     mimetype = models.CharField(max_length='500', blank=True)
     approved = models.BooleanField(default=False, blank=True)
+    featured = models.BooleanField(default=False, blank=True)
 
     def save(self):
         #XXX: Move the shit to static if approved!
@@ -32,6 +34,11 @@ class RecordingForm(ModelForm):
     #    self.is_updating = False
     #    if self.bound_object:
     #        self.is_updating = True
+
+    def clean(self):
+        if self.cleaned_data.get('rec_file',None).size > 209715200:
+            raise forms.ValidationError("File too big, son")
+        return self.cleaned_data
 
     def save(self):
         self.bound_object = Recording()

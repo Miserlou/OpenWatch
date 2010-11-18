@@ -23,16 +23,16 @@ Released   : 20100729
 	<div id="header-wrapper">
 		<div id="header">
 			<div id="logo">
-				<h1><a href="http://www.openwatch.net"><span>Open</span>Watch</a></h1>
+				<h1><a href="/"><span>Open</span>Watch</a></h1>
 			</div>
 			<div id="menu">
 				<ul>
-					<li class="current_page_item"><a href="#">Home</a></li>
-					<li><a href="#">Media</a></li>
-					<li><a href="#">Upload</a></li>
-					<li><a href="#">Apps</a></li>
-					<li><a href="#">About</a></li>
-					<li><a href="#">Contact</a></li>
+					<li {% if cat == "main" %} class="current_page_item" {% endif %}><a href="/">Home</a></li>
+					<li {% if cat == "media" %} class="current_page_item" {% endif %}><a href="/all">Media</a></li>
+					<li {% if cat == "upload" %} class="current_page_item" {% endif %}><a href="/upload">Upload</a></li>
+					<li {% if cat == "apps" %} class="current_page_item" {% endif %}><a href="#">Apps</a></li>
+					<li {% if cat == "about" %} class="current_page_item" {% endif %}><a href="#">About</a></li>
+					<li {% if cat == "contact" %} class="current_page_item" {% endif %}><a href="#">Contact</a></li>
 				</ul>
 			</div>
 		</div>
@@ -63,12 +63,9 @@ Released   : 20100729
 				<li>
 					<h2>Featured Media</h2>
 					<ul>
-						<li><a href="#">Aliquam libero</a></li>
-						<li><a href="#">Consectetuer adipiscing elit</a></li>
-						<li><a href="#">Metus aliquam pellentesque</a></li>
-						<li><a href="#">Suspendisse iaculis mauris</a></li>
-						<li><a href="#">Urnanet non molestie semper</a></li>
-						<li><a href="#">Proin gravida orci porttitor</a></li>
+                        {% for post in featured %}
+                        <li><a href="#">{{ post.name }}</a></li>
+                        {% endfor %}
 					</ul>
 				</li>
 				<li>
