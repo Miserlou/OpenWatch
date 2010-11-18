@@ -14,6 +14,7 @@ class Recording(models.Model):
     private_description = models.CharField(max_length=500, blank=True)
     date = models.DateTimeField('date uploaded', blank=True, default=datetime.now())
     location = models.CharField(max_length='200')
+    youtube = models.CharField(max_length='200', blank=True)
     rec_file = models.FileField(upload_to='recordings', storage=attachment_file_storage)
     file_loc = models.CharField(max_length='500', blank=True)
     mimetype = models.CharField(max_length='500', blank=True)

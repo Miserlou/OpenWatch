@@ -40,3 +40,9 @@ def listall(request):
     queryset = Recording.objects.filter(approved=True).all().order_by('-date')
     featureset = Recording.objects.filter(featured=True).all().order_by('-date')
     return render_to_response('listall.html', {'list': list(queryset), 'featured': list(featureset)[0:5], 'cat': 'media'})
+
+def view(request, media_id):
+    recording = get_object_or_404(Recording, pk=media_id)
+    queryset = Recording.objects.filter(approved=True).all().order_by('-date')
+    featureset = Recording.objects.filter(featured=True).all().order_by('-date')
+    return render_to_response('view.html', {'recording': recording, 'featured': list(featureset)[0:5], 'cat': 'media'})
