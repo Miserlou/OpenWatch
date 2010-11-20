@@ -15,7 +15,7 @@ Released   : 20100729
 <meta name="keywords" content="" />
 <meta name="description" content="" />
 <meta http-equiv="content-type" content="text/html; charset=utf-8" />
-<title>OpenWatch | No More Secrets</title>
+<title>OpenWatch | Demand Marvelous Secrets</title>
 <link href="/static/style.css" rel="stylesheet" type="text/css" media="screen" />
 </head>
 <body>
@@ -71,12 +71,11 @@ Released   : 20100729
 				<li>
 					<h2>Tags</h2>
 					<ul>
-						<li><a href="#">Aliquam libero</a></li>
-						<li><a href="#">Consectetuer adipiscing elit</a></li>
-						<li><a href="#">Metus aliquam pellentesque</a></li>
-						<li><a href="#">Suspendisse iaculis mauris</a></li>
-						<li><a href="#">Urnanet non molestie semper</a></li>
-						<li><a href="#">Proin gravida orci porttitor</a></li>
+						<li>{% load tag_cloud %}
+                            {% tag_cloud_for_model recordings.Recording as tags with steps=6 min_count=1 distribution=log %}
+                            {% for tag in tags %}
+                            <a href="/tag/{{tag.name}}">{{tag.name}}</a>
+                            {% endfor %}<a href="/tags"> all</a></li>
 					</ul>
 				</li>
 				<li>

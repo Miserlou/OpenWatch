@@ -1,0 +1,22 @@
+{% extends "header.html" %}
+{% block bodyblock %}
+	<div id="page">
+		<div id="content">
+			<div class="post">
+				<h2 class="title"><a href="#">By Tag {{ tag }}</a></h2>
+				<p class="meta"><a href="#"><span class="date">...</span></a>&nbsp;<span class="links">
+				<div class="entry">
+                    {% if entries %}
+                    {% for entry in entries %}
+                    <p><a href="/view/{{ entry.pk }}">{{ entry.name }}</a>
+                    <p>&nbsp;&nbsp;&nbsp;&nbsp;{{ entry.public_description }}
+                    {% endfor %}
+                    {% else %}
+                    <p>No articles have that tag</p>
+                    {% endif %}
+
+				</div>
+			</div>
+		</div>
+		<!-- end #content -->
+{% endblock %}

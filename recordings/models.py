@@ -3,6 +3,8 @@ from django.core.files.storage import FileSystemStorage
 from django.forms import ModelForm
 from datetime import datetime
 from django import forms
+from tagging.fields import TagField
+from tagging.models import Tag
 
 ulpath = 'openwatch/uploads/recordings/'
 attachment_file_storage = FileSystemStorage(location='/home/tuttle/openwatch/openwatch/uploads', base_url='recordings')
@@ -20,10 +22,14 @@ class Recording(models.Model):
     mimetype = models.CharField(max_length='500', blank=True)
     approved = models.BooleanField(default=False, blank=True)
     featured = models.BooleanField(default=False, blank=True)
+    tags = TagField()
 
     def save(self):
         #XXX: Move the shit to static if approved!
         super(Recording, self).save()
+
+    def get_tags(self):
+        return Tag.objects.get_for_object(self)
 
 class RecordingForm(ModelForm):
     class Meta:

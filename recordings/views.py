@@ -4,6 +4,8 @@ from django.core.urlresolvers import reverse
 from django.template import RequestContext
 from django.shortcuts import get_object_or_404, render_to_response
 from datetime import datetime
+from tagging.models import Tag, TaggedItem
+
 from openwatch.recordings.models import Recording, RecordingForm 
 
 def root(request):
@@ -46,3 +48,15 @@ def view(request, media_id):
     queryset = Recording.objects.filter(approved=True).all().order_by('-date')
     featureset = Recording.objects.filter(featured=True).all().order_by('-date')
     return render_to_response('view.html', {'recording': recording, 'featured': list(featureset)[0:5], 'cat': 'media'})
+
+def tags(request):
+    return render_to_response("tags.html")
+
+def with_tag(request, tag, object_id=None, page=1):
+    print "withtaaaagg"
+    query_tag = Tag.objects.get(name=tag)
+    entries = TaggedItem.objects.get_by_model(Recording, query_tag)
+    entries = entries.order_by('-date')
+
+    return render_to_response("with_tag.html", dict(tag=tag, entries=entries))
+
