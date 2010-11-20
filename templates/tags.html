@@ -1,0 +1,19 @@
+{% extends "header.html" %}
+{% block bodyblock %}
+	<div id="page">
+		<div id="content">
+			<div class="post">
+				<h2 class="title"><a href="#">All Tags</a></h2>
+				<p class="meta"><a href="#"><span class="date">...</span></a>&nbsp;<span class="links">
+				<div class="entry">
+                    {% load tag_cloud %}
+                        {% tag_cloud_for_model recordings.Recording as tags with steps=6 distribution=log %}
+                        {% for tag in tags %}
+                        <span class="tag-{{tag.font_size|add:"2"}}"><a href="/tag/{{tag.name|slugify}}/">{{tag.name}}</a></span> 
+                        {% endfor %}
+					<p>
+				</div>
+			</div>
+		</div>
+		<!-- end #content -->
+{% endblock %}
