@@ -27,6 +27,10 @@ class Recording(models.Model):
 
     def save(self):
         #XXX: Move the shit to static if approved!
+
+        if youtube is None:
+            print "Okay, uploading"
+
         super(Recording, self).save()
 
     def get_tags(self):
