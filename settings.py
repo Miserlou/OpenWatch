@@ -60,6 +60,7 @@ ADMIN_MEDIA_PREFIX = '/media/'
 
 # Make this unique, and don't share it with anybody.
 SECRET_KEY = '2f=jo^b+x)xu92a93wt3+d9drnzvp%=e&3um6ltw%o03cwn3v$'
+###XXX: Change me, obviously
 
 # List of callables that know how to import templates from various sources.
 TEMPLATE_LOADERS = (
@@ -104,3 +105,7 @@ INSTALLED_APPS = (
 
 CAPTCHA_FONT_SIZE = 42
 CAPTCHA_LETTER_ROTATION = None
+
+YOUTUBE_API_KEY = "" # CHANGEME
+YOUTUBE_EMAIL "" # CHANGEME
+YOUTUBE_PASS = "" # CHANGEME
