@@ -7,5 +7,6 @@ info_dict = {
 
 urlpatterns = patterns('',
       (r'^upload$', 'openwatch.recordings.views.upload'),
+      (r'^uploadnocaptcha$', 'openwatch.recordings.views.upload_no_captcha'),
       (r'^victory$', 'openwatch.recordings.views.victory'),
 )

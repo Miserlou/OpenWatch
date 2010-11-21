@@ -7,7 +7,7 @@
 				<h2 class="title"><a href="#">Upload Media</a></h2>
 				<p class="meta"><a href="#"><span class="date">...</span></a>&nbsp;<span class="links">
 				<div class="entry">
-                    <p><form enctype="multipart/form-data" action="/openwatch/upload" method="post">
+                    <p><form enctype="multipart/form-data" action="/openwatch/uploadnocaptcha" method="post">
     {% csrf_token %}
 
 		<div class="fieldWrapper">
@@ -40,13 +40,6 @@
 		  {{ form.location.errors }}
 	  </div><br>
 
-        {% if form.captcha %}
-		<div class="fieldWrapper">
-		  <label for="location">Verification:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>
-		  {{ form.captcha}}
-		  {{ form.location.errors }}
-	  </div><br>
-        {%endif%}
 <p><input type="submit" value="Upload!" /></p>
 </form>
 					<p>
