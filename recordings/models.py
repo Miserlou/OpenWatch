@@ -5,6 +5,7 @@ from datetime import datetime
 from django import forms
 from tagging.fields import TagField
 from tagging.models import Tag
+from captcha.fields import CaptchaField
 
 ulpath = 'openwatch/uploads/recordings/'
 attachment_file_storage = FileSystemStorage(location='/home/tuttle/openwatch/openwatch/uploads', base_url='recordings')
@@ -31,7 +32,7 @@ class Recording(models.Model):
     def get_tags(self):
         return Tag.objects.get_for_object(self)
 
-class RecordingForm(ModelForm):
+class RecordingNoCaptchaForm(ModelForm):
     class Meta:
         model = Recording
 
@@ -62,3 +63,34 @@ class RecordingForm(ModelForm):
         self.bound_object.file_loc = ulpath + stored_name
         self.bound_object.save() 
 
+class RecordingForm(ModelForm):
+    captcha = CaptchaField()
+    class Meta:
+        model = Recording
+
+    #def __init__(self, bound_object=None, *args, **kwargs):
+    #    super(RecordingForm, self).__init__(*args, **kwargs)
+    #    self.bound_object = bound_object
+    #    self.is_updating = False
+    #    if self.bound_object:
+    #        self.is_updating = True
+
+    def clean(self):
+        if self.cleaned_data.get('rec_file',None).size > 209715200:
+            raise forms.ValidationError("File too big, son")
+        return self.cleaned_data
+
+    def save(self):
+        self.bound_object = Recording()
+        uploaded_file = self.cleaned_data['rec_file']
+        import re
+        stored_name = re.sub(r'[^a-zA-Z0-9._]+', '-', uploaded_file.name)
+        self.bound_object.rec_file.save(stored_name, uploaded_file)
+        self.bound_object.mimetype = uploaded_file.content_type
+        self.bound_object.name = self.cleaned_data['name']
+        self.bound_object.public_description = self.cleaned_data['public_description']
+        self.bound_object.private_description = self.cleaned_data['private_description']
+        self.bound_object.location = self.cleaned_data['location']
+        self.bound_object.date = datetime.now()
+        self.bound_object.file_loc = ulpath + stored_name
+        self.bound_object.save() 

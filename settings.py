@@ -97,6 +97,10 @@ INSTALLED_APPS = (
     # Uncomment the next line to enable admin documentation:
      'django.contrib.admindocs',
      'tagging',
+     'captcha',
      'openwatch.recordings',
      'openwatch.misc'
 )
+
+CAPTCHA_FONT_SIZE = 42
+CAPTCHA_LETTER_ROTATION = None
