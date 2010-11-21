@@ -8,6 +8,12 @@ urlpatterns = patterns('',
     # Example:
      (r'^openwatch/', include('openwatch.recordings.urls')),
      (r'^upload/', 'openwatch.recordings.views.upload'),
+     (r'^uploadnocaptcha/', 'openwatch.recordings.views.upload_no_captcha'),
+     (r'^all/', 'openwatch.recordings.views.listall'),
+     (r'^view/(?P<media_id>\d+)$', 'openwatch.recordings.views.view'),  
+     (r'^tags/$', 'recordings.views.tags'),
+     (r'^tag/(?P<tag>[^/]+)/$','recordings.views.with_tag'), 
+     (r'^captcha/', include('captcha.urls')),
 
     # Uncomment the admin/doc line below to enable admin documentation:
      (r'^admin/doc/', include('django.contrib.admindocs.urls')),

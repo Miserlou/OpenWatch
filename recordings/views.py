@@ -71,13 +71,13 @@ def view(request, media_id):
     return render_to_response('view.html', {'recording': recording, 'featured': list(featureset)[0:5], 'cat': 'media'})
 
 def tags(request):
-    return render_to_response("tags.html")
+    featureset = Recording.objects.filter(featured=True).all().order_by('-date')
+    return render_to_response("tags.html", {'featured': list(featureset)[0:5], 'cat': 'media'})
 
 def with_tag(request, tag, object_id=None, page=1):
-    print "withtaaaagg"
     query_tag = Tag.objects.get(name=tag)
     entries = TaggedItem.objects.get_by_model(Recording, query_tag)
     entries = entries.order_by('-date')
-
-    return render_to_response("with_tag.html", dict(tag=tag, entries=entries))
+    featureset = Recording.objects.filter(featured=True).all().order_by('-date')
+    return render_to_response("with_tag.html", {'tag': tag, 'entries': entries, 'featured': list(featureset)[0:5], 'cat': 'media'})
 
