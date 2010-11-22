@@ -7,7 +7,7 @@ TEMPLATE_DEBUG = DEBUG
 ADMINS = (
     # ('Your Name', 'your_email@domain.com'),
 )
-BASE_URL = http://www.openwatch.net'
+BASE_URL = 'http://www.openwatch.net'
 
 MANAGERS = ADMINS
 
