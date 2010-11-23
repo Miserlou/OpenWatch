@@ -18,6 +18,14 @@ def about(request):
     featureset = Recording.objects.filter(featured=True).all().order_by('-date')
     return render_to_response('about.html', {'featured': list(featureset)[0:5], 'cat': 'about' })
 
+def apps(request):
+    featureset = Recording.objects.filter(featured=True).all().order_by('-date')
+    return render_to_response('apps.html', {'featured': list(featureset)[0:5], 'cat': 'apps' })
+
+def contact(request):
+    featureset = Recording.objects.filter(featured=True).all().order_by('-date')
+    return render_to_response('contact.html', {'featured': list(featureset)[0:5], 'cat': 'contact' })
+
 def upload(request):
     if request.method == 'POST': # If the form has been submitted...
         form = RecordingForm(request.POST, request.FILES) # A form bound to the POST data
