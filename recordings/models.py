@@ -3,12 +3,13 @@ from django.core.files.storage import FileSystemStorage
 from django.forms import ModelForm
 from datetime import datetime
 from django import forms
+from django.conf import settings
 from tagging.fields import TagField
 from tagging.models import Tag
 from captcha.fields import CaptchaField
 
 ulpath = 'openwatch/uploads/recordings/'
-attachment_file_storage = FileSystemStorage(location='/home/tuttle/openwatch/openwatch/uploads', base_url='recordings')
+attachment_file_storage = FileSystemStorage(location='/var/www/openwatch/openwatch/uploads', base_url='recordings')
 
 # Create your models here.
 class Recording(models.Model):
@@ -17,7 +18,7 @@ class Recording(models.Model):
     private_description = models.CharField(max_length=500, blank=True)
     date = models.DateTimeField('date uploaded', blank=True, default=datetime.now())
     location = models.CharField(max_length='200')
-    youtube = models.CharField(max_length='200', blank=True)
+    vimeo = models.CharField(max_length='200', blank=True)
     rec_file = models.FileField(upload_to='recordings', storage=attachment_file_storage)
     file_loc = models.CharField(max_length='500', blank=True)
     mimetype = models.CharField(max_length='500', blank=True)
@@ -28,8 +29,9 @@ class Recording(models.Model):
     def save(self):
         #XXX: Move the shit to static if approved!
 
-        if youtube is None:
+        if len(self.vimeo) == 0 and self.approved and "video" in self.mimetype:
             print "Okay, uploading"
+            #XXX: Vimeo upload https://github.com/dkm/python-vimeo
 
         super(Recording, self).save()
 
@@ -96,5 +98,5 @@ class RecordingForm(ModelForm):
         self.bound_object.private_description = self.cleaned_data['private_description']
         self.bound_object.location = self.cleaned_data['location']
         self.bound_object.date = datetime.now()
-        self.bound_object.file_loc = ulpath + stored_name
+        self.bound_object.file_loc = settings.UPLOAD_ROOT + stored_name
         self.bound_object.save() 
