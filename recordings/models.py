@@ -1,5 +1,6 @@
 from django.db import models
 from django.core.files.storage import FileSystemStorage
+from django.core.mail import send_mail
 from django.forms import ModelForm
 from datetime import datetime
 from django import forms
@@ -32,6 +33,10 @@ class Recording(models.Model):
         if len(self.vimeo) == 0 and self.approved and "video" in self.mimetype:
             print "Okay, uploading"
             #XXX: Vimeo upload https://github.com/dkm/python-vimeo
+
+        # New recording, let me know about it
+        if not self.approved:
+            send_mail('New recording: ' + name, self.public_description, 'bigvagitabluntz420@gmail.com', 'rich@anomos.info', fail_silently=False)
 
         super(Recording, self).save()
 
