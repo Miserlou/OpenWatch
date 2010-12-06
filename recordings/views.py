@@ -49,15 +49,16 @@ def upload(request):
 
 def upload_no_captcha(request):
     if request.method == 'POST': # If the form has been submitted...
-        form = RecordingNoCaptchaForm(request.POST, request.FILES) # A form bound to the POST data
-        if form.is_valid(): # All validation rules pass
-            # Process the data in form.cleaned_data
-            # XXX: Check filetypes, etc
-
-            form.save()
-            return HttpResponseRedirect('/openwatch/victory') # Redirect after POST
-        else:
-            print "Shiiiiit"
+        recording = Recording()
+        recording.public_description = request.POST.get('public_description', 'No description available')
+        recording.private_description = request.POST.get('private_description', 'No description available')
+        recording.name = request.POST.get('name', 'No description available')
+        recording.public_description = request.POST.get('public_description', 'No description available')
+        recording.location = request.POST.get('location', 'No description available')
+        recording.rec_file = request.FILES['rec_file']
+        recording.date = datetime.now()
+        recording.save()
+        return HttpResponseRedirect('/openwatch/victory') # Redirect after POST
     else:
         form = RecordingNoCaptchaForm() # An unbound form
 

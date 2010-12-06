@@ -106,3 +106,9 @@ INSTALLED_APPS = (
 
 CAPTCHA_FONT_SIZE = 42
 CAPTCHA_LETTER_ROTATION = None
+
+EMAIL_USE_TLS = True
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST_USER = 'bigvagitabluntz420@gmail.com'
+EMAIL_HOST_PASSWORD = 'incangold'
+EMAIL_PORT = 587

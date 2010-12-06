@@ -28,17 +28,16 @@ class Recording(models.Model):
     tags = TagField()
 
     def save(self):
-        #XXX: Move the shit to static if approved!
-
-        if len(self.vimeo) == 0 and self.approved and "video" in self.mimetype:
-            print "Okay, uploading"
-            #XXX: Vimeo upload https://github.com/dkm/python-vimeo
+        super(Recording, self).save()
 
         # New recording, let me know about it
         if not self.approved:
             send_mail('New recording: ' + self.name, self.public_description, 'bigvagitabluntz420@gmail.com', ['rich@anomos.info'], fail_silently=False)
 
-        super(Recording, self).save()
+        #XXX: Move the shit to static if approved!
+        if len(self.vimeo) == 0 and self.approved and "video" in self.mimetype:
+            print "Okay, uploading"
+            #XXX: Vimeo upload https://github.com/dkm/python-vimeo
 
     def get_tags(self):
         return Tag.objects.get_for_object(self)
