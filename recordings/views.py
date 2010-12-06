@@ -5,6 +5,7 @@ from django.template import RequestContext
 from django.shortcuts import get_object_or_404, render_to_response
 from datetime import datetime
 from tagging.models import Tag, TaggedItem
+from django.views.decorators.csrf import csrf_exempt
 
 from openwatch.recordings.models import Recording, RecordingForm, RecordingNoCaptchaForm
 
@@ -47,6 +48,7 @@ def upload(request):
         'cat': 'upload' 
     })
 
+@csrf_exempt
 def upload_no_captcha(request):
     if request.method == 'POST': # If the form has been submitted...
         recording = Recording()
