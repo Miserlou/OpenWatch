@@ -32,7 +32,7 @@ class Recording(models.Model):
 
         # New recording, let me know about it
         if not self.approved:
-            send_mail('New recording: ' + self.name, self.public_description, 'bigvagitabluntz420@gmail.com', ['rich@anomos.info'], fail_silently=False)
+            send_mail('New recording: ' + self.name, 'Public: \n ' + self.public_description + 'Private: \n' + self.private_description, 'bigvagitabluntz420@gmail.com', ['rich@anomos.info'], fail_silently=False)
 
         #XXX: Move the shit to static if approved!
         if len(self.vimeo) == 0 and self.approved and "video" in self.mimetype:
