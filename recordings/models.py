@@ -20,6 +20,8 @@ class Recording(models.Model):
     date = models.DateTimeField('date uploaded', blank=True, default=datetime.now())
     location = models.CharField(max_length='200')
     vimeo = models.CharField(max_length='200', blank=True)
+    youtube= models.CharField(max_length='200', blank=True)
+    local = models.CharField(max_length='200', blank=True)
     rec_file = models.FileField(upload_to='recordings', storage=attachment_file_storage)
     file_loc = models.CharField(max_length='500', blank=True)
     mimetype = models.CharField(max_length='500', blank=True)
