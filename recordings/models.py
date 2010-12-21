@@ -58,6 +58,9 @@ class RecordingNoCaptchaForm(ModelForm):
     #        self.is_updating = True
 
     def clean(self):
+        rec = self.cleaned_data.get('rec_file',None)
+        if rec is None:
+            raise forms.ValidationError("No file attached")
         if self.cleaned_data.get('rec_file',None).size > 209715200:
             raise forms.ValidationError("File too big, son")
         return self.cleaned_data

@@ -8,7 +8,7 @@
 				<p class="meta"><a href="#"><span class="date">...</span></a>&nbsp;<span class="links">
 				<div class="entry">
                     <p><form enctype="multipart/form-data" action="/openwatch/upload" method="post">
-    {% csrf_token %}
+            {% csrf_token %}
 
 		<div class="fieldWrapper">
 		  <label for="rec_file">Recording file:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>
@@ -44,7 +44,7 @@
 		<div class="fieldWrapper">
 		  <label for="location">Verification:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>
 		  {{ form.captcha}}
-		  {{ form.location.errors }}
+		  {{ form.captcha.errors }}
 	  </div><br>
         {%endif%}
 <p><input type="submit" value="Upload!" /></p>
