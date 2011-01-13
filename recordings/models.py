@@ -15,8 +15,6 @@ attachment_file_storage = FileSystemStorage(location='/var/www/openwatch/openwat
 # Create your models here.
 class Recording(models.Model):
     name = models.CharField(max_length=200)
-    public_description = models.CharField(max_length=500)
-    private_description = models.CharField(max_length=500, blank=True)
     date = models.DateTimeField('date uploaded', blank=True, default=datetime.now())
     location = models.CharField(max_length='200')
     vimeo = models.CharField(max_length='200', blank=True)
@@ -25,11 +23,14 @@ class Recording(models.Model):
     youtube= models.CharField(max_length='200', blank=True)
     local = models.CharField(max_length='200', blank=True)
     rec_file = models.FileField(upload_to='recordings', storage=attachment_file_storage)
-    file_loc = models.CharField(max_length='500', blank=True)
-    mimetype = models.CharField(max_length='500', blank=True)
+    file_loc = models.CharField(max_length='200', blank=True)
+    mimetype = models.CharField(max_length='200', blank=True)
     approved = models.BooleanField(default=False, blank=True)
     featured = models.BooleanField(default=False, blank=True)
     tags = TagField()
+
+    public_description = models.TextField()
+    private_description = models.TextField(blank=True)
 
     def save(self):
         super(Recording, self).save()
@@ -93,6 +94,9 @@ class RecordingForm(ModelForm):
     #        self.is_updating = True
 
     def clean(self):
+        rec = self.cleaned_data.get('rec_file',None)
+        if rec is None:
+            raise forms.ValidationError("No file attached")
         if self.cleaned_data.get('rec_file',None).size > 209715200:
             raise forms.ValidationError("File too big, son")
         return self.cleaned_data
