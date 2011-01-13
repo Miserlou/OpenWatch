@@ -1,4 +1,3 @@
-ngo settings for openwatch project.
 import os
 
 DEBUG = True
