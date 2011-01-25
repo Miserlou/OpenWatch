@@ -6,7 +6,6 @@ from django.contrib import admin
 admin.autodiscover()
 
 urlpatterns = patterns('',
-    # Example:
      (r'^upload/', 'openwatch.recordings.views.upload'),
      (r'^uploadnocaptcha/', 'openwatch.recordings.views.upload_no_captcha'),
      (r'^all/', 'openwatch.recordings.views.listall'),
@@ -17,6 +16,7 @@ urlpatterns = patterns('',
      (r'^tags/$', 'recordings.views.tags'),
      (r'^tag/(?P<tag>[^/]+)/$','recordings.views.with_tag'), 
      (r'^captcha/', include('captcha.urls')),
+     (r'^openwatch/', include('openwatch.recordings.urls')),
 
     # Uncomment the admin/doc line below to enable admin documentation:
      (r'^admin/doc/', include('django.contrib.admindocs.urls')),
