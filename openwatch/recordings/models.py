@@ -10,7 +10,7 @@ from tagging.models import Tag
 from captcha.fields import CaptchaField
 
 ulpath = 'openwatch/uploads/recordings/'
-attachment_file_storage = FileSystemStorage(location='/var/www/openwatch/openwatch/uploads', base_url='recordings')
+attachment_file_storage = FileSystemStorage(location=settings.UPLOAD_ROOT, base_url='recordings')
 
 # Create your models here.
 class Recording(models.Model):
