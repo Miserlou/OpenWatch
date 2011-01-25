@@ -10,6 +10,9 @@
                     {% if recording.vimeo %}
                     <p><iframe src="http://player.vimeo.com/video/{{ recording.vimeo }}?color=ff000d" width="601" height="338" frameborder="0"></iframe></p>
                     {% endif %}
+                    {% if recording.vimeo_dl %}
+                    <p><a href="{{ recording.vimeo_dl }}">Download Video</a></p>
+                    {% endif %}
                     <p>&nbsp;&nbsp;&nbsp;&nbsp;{{ recording.public_description }}
 				</div>
 			</div>
