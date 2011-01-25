@@ -53,6 +53,8 @@ MEDIA_ROOT = '/home/tuttle/Projects/openwatch/openwatch/static/'
 # Examples: "http://media.lawrence.com", "http://example.com/media/"
 MEDIA_URL = 'http://openwatch.net/static/'
 
+UPLOAD_ROOT = '/var/www/openwatch/uploads/'
+
 # URL prefix for admin media -- CSS, JavaScript and images. Make sure to use a
 # trailing slash.
 # Examples: "http://foo.com/media/", "/media/".

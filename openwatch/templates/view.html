@@ -7,7 +7,9 @@
 				<h2 class="title"><a href="#">{{recording.name}}</a></h2>
                 <p class="meta"><a href="#"><span class="date">{{recording.date}}</span></a>&nbsp;<span class="links">
 				<div class="entry">
-                    <p><object width="480" height="385"><param name="movie" value="http://www.youtube.com/v/glGhmqOYqNA?fs=1&amp;hl=en_US"></param><param name="allowFullScreen" value="true"></param><param name="allowscriptaccess" value="always"></param><embed src="http://www.youtube.com/v/glGhmqOYqNA?fs=1&amp;hl=en_US" type="application/x-shockwave-flash" allowscriptaccess="always" allowfullscreen="true" width="480" height="385"></embed></object>
+                    {% if recording.vimeo %}
+                    <p><iframe src="http://player.vimeo.com/video/{{ recording.vimeo }}?color=ff000d" width="601" height="338" frameborder="0"></iframe></p>
+                    {% endif %}
                     <p>&nbsp;&nbsp;&nbsp;&nbsp;{{ recording.public_description }}
 				</div>
 			</div>
