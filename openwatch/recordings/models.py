@@ -41,6 +41,7 @@ class Recording(models.Model):
 
         #XXX: Move the shit to static if approved!
         if len(self.vimeo) == 0 and self.approved and "video" in self.mimetype:
+            pass
             #XXX: Vimeo upload https://github.com/dkm/python-vimeo
 
     def get_tags(self):
