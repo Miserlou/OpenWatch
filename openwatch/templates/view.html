@@ -13,6 +13,15 @@
                     {% if recording.vimeo_dl %}
                     <p><a href="{{ recording.vimeo_dl }}">Download Video</a></p>
                     {% endif %}
+                    {% if recording.local %}
+                    <p>
+                        <audio id="audio1" controls>
+                        <source src = "{{ recording.local }}.ogg" type = "audio/ogg">
+                        <source src = "{{ recording.local }}.mp3" >
+
+                        </audio>
+                        <p>Download <a href="{{recording.local}}.mp3">MP3 here</a>.
+                    {% endif %}
                     <p>&nbsp;&nbsp;&nbsp;&nbsp;{{ recording.public_description }}
 				</div>
 			</div>
