@@ -1,4 +1,4 @@
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, HttpResponseNotFound
 from django.template import Context, loader
 from django.core.urlresolvers import reverse
 from django.template import RequestContext
@@ -82,6 +82,8 @@ def view(request, media_id):
     recording = get_object_or_404(Recording, pk=media_id)
     queryset = Recording.objects.filter(approved=True).all().order_by('-date')
     featureset = Recording.objects.filter(featured=True).all().order_by('-date')
+    if not recording.approved:
+       return HttpResponseNotFound('<h1>No Page Here</h1>')
     return render_to_response('view.html', {'recording': recording, 'featured': list(featureset)[0:5], 'cat': 'media'})
 
 def tags(request):
