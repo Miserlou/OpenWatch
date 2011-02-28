@@ -36,7 +36,7 @@ class Recording(models.Model):
         super(Recording, self).save()
 
         # New recording, let me know about it
-        if not self.approved:
+        if not self.approved and int(self.rec_file.file.size) > 204800:
             send_mail('New recording: ' + self.name, 'Public: \n ' + self.public_description + 'Private: \n' + self.private_description + '\nSize:\n:' + str(self.rec_file.file.size) + '\nFile: ' + str(self.rec_file) + ' ' + str(self.file_loc) + "\nMIME: " + str(self.mimetype), 'openwatchnotifier@gmail.com', ['rich@anomos.info'], fail_silently=False)
 
         #XXX: Move the shit to static if approved!
