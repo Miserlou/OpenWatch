@@ -7,9 +7,3 @@ sudo python setup.py install
 
 svn checkout http://django-simple-captcha.googlecode.com/svn/trunk/ django-simple-captcha-read-only
 sudo python setup.py install
-
-TODO:
-        Move media to static upon approval
-        Contact
-        About
-        Individual page view
