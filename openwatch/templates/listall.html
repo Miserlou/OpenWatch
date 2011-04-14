@@ -7,7 +7,9 @@
 				<h2 class="title"><a href="#">All recordings</a></h2>
 				<div class="entry">
                     {% for post in list %}
+                    {% if post.featured %}<b>{% endif %}
                     <p><a href="/view/{{ post.pk }}">{{ post.name }}</a>
+                    {% if post.featured %}</b>{% endif %}
                     <p>&nbsp;&nbsp;&nbsp;&nbsp;{{ post.public_description|truncatewords:15 }}
                     {% endfor %}
 				</div>
