@@ -102,6 +102,7 @@ INSTALLED_APPS = (
      'tagging',
      'captcha',
      'openwatch.recordings',
+     'openwatch.blog',
      'openwatch.misc'
 )
 
