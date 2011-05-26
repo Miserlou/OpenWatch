@@ -8,7 +8,6 @@
 				<div class="entry">
                     {% for post in list %}
                     <p><a href="/blog/{{ post.pk }}">{{ post.title}}</a>
-                    <p>&nbsp;&nbsp;&nbsp;&nbsp;{{ post.body|truncatewords:15 }}
                     {% endfor %}
 				</div>
 			</div>
