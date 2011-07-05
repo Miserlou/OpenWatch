@@ -1,5 +1,6 @@
 from django.conf.urls.defaults import *
 from django.conf import settings
+from openwatch.blog.feeds import LatestEntriesFeed
 
 # Uncomment the next two lines to enable the admin:
 from django.contrib import admin
@@ -16,6 +17,7 @@ urlpatterns = patterns('',
      (r'^view/(?P<media_id>\d+)$', 'openwatch.recordings.views.view'),  
      (r'^blog/(?P<media_id>\d+)$', 'openwatch.blog.views.view'),  
      (r'^blog/', 'openwatch.blog.views.listall'),  
+     (r'^feed/', LatestEntriesFeed()),
      (r'^tags/$', 'recordings.views.tags'),
      (r'^tag/(?P<tag>[^/]+)/$','recordings.views.with_tag'), 
      (r'^captcha/', include('captcha.urls')),
