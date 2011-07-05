@@ -15,4 +15,7 @@ class Post(models.Model):
         return Tag.objects.get_for_object(self)
 
     def __unicode__(self):
-        return self.title 
+        return self.title
+
+    def get_absolute_url(self):
+        return "http://openwatch.net/blog/" + str(self.pk)
