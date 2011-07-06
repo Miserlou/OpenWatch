@@ -6,7 +6,6 @@ from django.shortcuts import get_object_or_404, render_to_response
 from datetime import datetime
 from tagging.models import Tag, TaggedItem
 from django.views.decorators.csrf import csrf_exempt
-from django.contrib.syndication.views import Feed
 
 from openwatch.blog.models import Post 
 from openwatch.recordings.models import Recording, RecordingForm, RecordingNoCaptchaForm
@@ -23,16 +22,3 @@ def listall(request):
     featureset = Recording.objects.filter(featured=True).all().order_by('-date')
     return render_to_response('listallblog.html', {'list': list(queryset), 'featured': list(featureset)[0:5], 'cat': 'blog'})
 
-class LatestEntriesFeed(Feed):
-    title = "OpenWatch Blog"
-    link = "/blog/"
-    description = "News and Reports from OpenWatch.net"
-
-    def items(self):
-        return Post.objects.order_by('-date')
-
-    def item_title(self, item):
-        return item.title
-
-    def item_description(self, item):
-        return item.body
