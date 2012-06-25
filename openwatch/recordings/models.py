@@ -50,6 +50,9 @@ class Recording(models.Model):
     def __unicode__(self):
         return self.name + ': ' + self.public_description 
 
+# For submissions from ACLU NJ's Police Tape Android / iOS App
+class ACLUNJRecording(Recording):
+    email = models.EmailField(max_length=254, blank=True)
 
 class RecordingNoCaptchaForm(ModelForm):
     class Meta:
