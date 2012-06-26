@@ -59,7 +59,7 @@ def map_tag(request, tag=None):
 
 def map_json(request):
     #featureset = Recording.objects.filter(~Q(lat=None), ~Q(lon=None), ~Q(jtype='organic')).order_by('-date')[:1000]
-    featureset = Recording.objects.all().order_by('-date').filter(~Q(location=None)).exclude(location__isnull=True).exclude(location__exact='')[:750]
+    featureset = Recording.objects.all().order_by('-date').filter(~Q(location='')).exclude(location__isnull=True).exclude(location__exact='')[:750]
     resp = encode_queryset(featureset)
     return HttpResponse(resp, mimetype="application/json")
 
@@ -105,7 +105,7 @@ def map_location_json(request, ne_lat=0, ne_lon=0, sw_lat=0, sw_lon=0):
     sw_lon = float(sw_lon)
 
     #featureset = Recording.objects.filter(lat__lt=ne_lat, lat__gt=sw_lat,lon__lt=ne_lon, lon__gt=sw_lon).order_by('-date')
-    featureset = Recording.objects.order_by('-date').filter(~Q(location=None))[:750]
+    featureset = Recording.objects.order_by('-date').filter(~Q(location=''))[:750]
 
     if len(featureset) < 1:
         return HttpResponse("{\"objects\":[]}", mimetype="application/json")
