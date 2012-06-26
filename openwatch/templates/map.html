@@ -151,7 +151,7 @@
             marker_ids.push(job['id']);
 
             marker.str =
-              "<div class='mapInfo'><h1>" + job['title'] + "</h1><h2>" + job['about'] + "</h2>" + "<p><audio id='audio1' controls><source src = '/" + job['rec_file'] + "'></audio><p>Download file <a href='/" + job['rec_file'] + "'>MP3 here</a>.</div>";
+              "<div class='mapInfo'><h1>" + job['title'] + "</h1><p><h2>" + job['about'] + "</h2>" + "<p><audio id='audio1' controls><source src = '/" + job['rec_file'] + "'></audio><br /><br /><p><a href='/" + job['rec_file'] + "'>Download file!</a><p><i>..or..</i><p><a href='/view/" + job['id'] +"' target='_blank'>View recording</a>.<p>Location: <i>" + job['location'] +"</i></div>";
             marker.shrt =  "<div class='mapInfo'><h1>" + job['title'] + "</h1><h2>" + job['about'] + "</h2>" +  "<h4>More Information</h4><i><b>Click</b> on the <b>pin</b> for more information!</i><p><center><b></b></center><br /></div>";
             marker.url = job['url'];
             marker.fprint = job['fprint'];
