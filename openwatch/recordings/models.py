@@ -51,7 +51,7 @@ class Recording(models.Model):
         else:
             lat = 0.0
             lon = 0.0
-        return {'id':self.pk, 'rec_file': str(self.rec_file), 'title' :self.name, 'tags': self.tags, 'url': 'http://openwatch.net/view/' + str(self.pk), 'about': self.public_description, 'lat': lat, 'lon': lon} 
+        return {'id':self.pk, 'rec_file': str(self.rec_file), 'title' :self.name, 'tags': self.tags, 'url': 'http://openwatch.net/view/' + str(self.pk), 'about': self.public_description, 'lat': lat, 'lon': lon, 'location': self.location} 
 
     def get_tags(self):
         return Tag.objects.get_for_object(self)
