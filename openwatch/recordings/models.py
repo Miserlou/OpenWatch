@@ -44,6 +44,15 @@ class Recording(models.Model):
             pass
             #XXX: Vimeo upload https://github.com/dkm/python-vimeo
 
+
+    def to_dict(self):
+        if ',' in self.location:
+            lat, lon = self.location.split(",",1)
+        else:
+            lat = 0.0
+            lon = 0.0
+        return {'id':self.pk, 'rec_file': str(self.rec_file), 'title' :self.name, 'tags': self.tags, 'url': 'http://openwatch.net/view/' + str(self.pk), 'about': self.public_description, 'lat': lat, 'lon': lon} 
+
     def get_tags(self):
         return Tag.objects.get_for_object(self)
 
