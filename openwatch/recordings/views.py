@@ -1,7 +1,5 @@
-from django.http import HttpResponse, HttpResponseRedirect, HttpResponseNotFound
-from django.template import Context, loader
-from django.core.urlresolvers import reverse
-from django.template import RequestContext
+from django.http import HttpResponseRedirect, HttpResponseNotFound
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404, render_to_response
 from datetime import datetime
 from tagging.models import Tag, TaggedItem
@@ -29,6 +27,11 @@ def contact(request):
 def join(request):
     featureset = Recording.objects.filter(featured=True).all().order_by('-date')
     return render_to_response('join.html', {'featured': list(featureset)[0:5], 'cat': 'join' })
+
+@login_required
+def moderate(request):
+    
+    return render_to_response('moderate.html')
 
 def upload(request):
     if request.method == 'POST': # If the form has been submitted...
