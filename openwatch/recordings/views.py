@@ -5,10 +5,9 @@ from datetime import datetime
 from tagging.models import Tag, TaggedItem
 from django.views.decorators.csrf import csrf_exempt
 
-from openwatch.recordings.models import Recording, ACLUNJRecording, RecordingForm, RecordingNoCaptchaForm
+from openwatch.recordings.models import Recording, RecordingForm, RecordingNoCaptchaForm
 
 def root(request):
-
     featureset = Recording.objects.filter(featured=True).all().order_by('-date')
     return render_to_response('home.html', {'featured': list(featureset)[0:5], 'cat': 'main' })
 
@@ -30,7 +29,6 @@ def join(request):
 
 @login_required
 def moderate(request):
-    
     return render_to_response('moderate.html')
 
 def upload(request):
@@ -57,19 +55,18 @@ def upload(request):
 @csrf_exempt
 def upload_no_captcha(request):
     if request.method == 'POST': # If the form has been submitted...
+        recording = Recording()
         # Check if recording submitted by ACLU-NJ Police Tape 
         # These recording filenames are of form XXXX_aclunj.XXX
         if "_aclunj." in request.FILES['rec_file'].name:
-            recording = ACLUNJRecording()
             # Police Tape appends email to existing privDesc:
             # privDesc = privDesc + "[" + email+"]";
             try:
                 recording.email = request.POST.get('private_description', '').rsplit("[", 1)[1].rsplit("]", 1)[0]
                 recording.private_description = request.POST.get('private_description', 'No description available').rsplit("[", 1)[0]
             except:
-                pass
+                recording.private_description = request.POST.get('private_description', 'No description available')
         else:
-            recording = Recording()
             recording.private_description = request.POST.get('private_description', 'No description available')
 
         recording.public_description = request.POST.get('public_description', 'No description available')

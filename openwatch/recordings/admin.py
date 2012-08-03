@@ -1,5 +1,4 @@
 from django.contrib import admin
-from openwatch.recordings.models import Recording, ACLUNJRecording
+from openwatch.recordings.models import Recording
 
 admin.site.register(Recording)
-admin.site.register(ACLUNJRecording)

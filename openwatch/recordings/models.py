@@ -15,12 +15,13 @@ attachment_file_storage = FileSystemStorage(location=settings.UPLOAD_ROOT, base_
 # Create your models here.
 class Recording(models.Model):
     name = models.CharField(max_length=200)
+    email = models.EmailField(max_length=254, blank=True)
     date = models.DateTimeField('date uploaded', blank=True, default=datetime.now())
     location = models.CharField(max_length='200')
     vimeo = models.CharField(max_length='200', blank=True)
     vimeo_dl = models.CharField(max_length='200', blank=True)
     liveleak = models.CharField(max_length='200', blank=True)
-    youtube= models.CharField(max_length='200', blank=True)
+    youtube = models.CharField(max_length='200', blank=True)
     local = models.CharField(max_length='200', blank=True)
     rec_file = models.FileField(upload_to='recordings', storage=attachment_file_storage)
     file_loc = models.CharField(max_length='200', blank=True)
@@ -47,12 +48,10 @@ class Recording(models.Model):
     def get_tags(self):
         return Tag.objects.get_for_object(self)
 
+
     def __unicode__(self):
         return self.name + ': ' + self.public_description 
 
-# For submissions from ACLU NJ's Police Tape Android / iOS App
-class ACLUNJRecording(Recording):
-    email = models.EmailField(max_length=254, blank=True)
 
 class RecordingNoCaptchaForm(ModelForm):
     class Meta:
