@@ -21,7 +21,7 @@ urlpatterns = patterns('',
      (r'^tags/$', 'recordings.views.tags'),
      (r'^tag/(?P<tag>[^/]+)/$','recordings.views.with_tag'), 
      (r'^captcha/', include('captcha.urls')),
-     (r'^openwatch/', include('openwatch.recordings.urls')),
+     (r'^map/', include('openwatch.map.urls')),
 
     # Uncomment the admin/doc line below to enable admin documentation:
      (r'^admin/doc/', include('django.contrib.admindocs.urls')),

@@ -1,0 +1,426 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html style="height:100%; width:100%; margin: 0; padding: 0;">
+
+<head>
+
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<meta name="keywords" content="" />
+<meta name="description" content="" />
+<meta name="viewport" content="width=768px, minimum-scale=1.0, maximum-scale=1.0" />
+<link rel="shortcut icon" type="image/x-icon" href="/static/favicon.ico">
+<title>OpenWatch Recordings</title> 
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.min.js"></script>
+<script src="/static/jquery.fittext.js"></script>
+<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
+<link href="/static/style11.css" rel="stylesheet" type="text/css" media="screen" />
+</head>
+<body style="height:100%; width:100%; margin: 0; padding: 0; overflow: hidden;">
+
+<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
+<script type="text/javascript" src="http://www.google.com/jsapi?key=ABQIAAAAp04yNttlQq-7b4aZI_jL5hQYPm-xtd00hTQOC0OXpAMO40FHAxQMnH50uBbWoKVHwgpklyirDEregg"></script>
+<script type="text/javascript" src="/static/markerclusterer_packed.js"></script>
+<div id="realmap" class="single_map" style="width:100%; height:100%; margin: 0 auto; padding: 0; position: relative;"></div>
+
+          <script>
+
+          var map;
+          var markers = [];
+          var marker_ids = [];
+          var mcOptions;
+          var markerCluster = new MarkerClusterer(map, markers);
+          var tag = '';
+          var req;
+          var bounds;
+          var lastZoom = 20;
+          var openWindow = false;
+          var first = true;
+
+          var infowindow = new google.maps.InfoWindow({
+              content: "",
+              disableAutoPan: true
+            });
+
+            var freelancePinColor = "527DFF";
+            var freelancePinImage = new google.maps.MarkerImage("http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=%E2%80%A2|" + freelancePinColor,
+                new google.maps.Size(21, 34),
+                new google.maps.Point(0,0),
+                new google.maps.Point(10, 34));
+            var freelancePinShadow = new google.maps.MarkerImage("http://chart.apis.google.com/chart?chst=d_map_pin_shadow",
+                new google.maps.Size(40, 37),
+                new google.maps.Point(0, 0),
+                new google.maps.Point(12, 35));
+                
+                
+          function getBoundries(){
+
+            var ne = bounds.getNorthEast(); // LatLng of the north-east corner
+            var sw = bounds.getSouthWest(); // LatLng of the south-west corder
+
+            return [ne.lat(), ne.lng(), sw.lat(), sw.lng()];
+            
+          }  
+
+          function displayMap(latitude,longitude){
+            
+            var latLng = new google.maps.LatLng(latitude, longitude);
+            map = new google.maps.Map(document.getElementById('realmap'), {
+              zoom: 8,
+              center: latLng,
+              mapTypeId: google.maps.MapTypeId.ROADMAP
+            });
+
+            google.maps.event.addListener(map, 'zoom_changed', function(){
+              if(map.getBounds() != undefined){
+                bounds = map.getBounds();
+              }
+              
+              if ($.trim($('#tagSearch').val().toLowerCase()).length < 1) {
+                if(map.getZoom() >= 6){
+                    if(markers.length > 1300){
+                      clearMap();
+                    }
+                    $('#showing').html("Searching..");
+                    getDataPoints();
+                  }
+                  
+              if(map.getZoom() < 6){
+                    clearMap();
+                    $('#showing').html("Searching..");
+                    getDataPoints();
+                  }
+              }
+              lastZoom = map.getZoom();
+              bounds = map.getBounds(); 
+            });
+
+            google.maps.event.addListener(map, 'dragend', function(){
+                bounds = map.getBounds(); 
+                if ($.trim($('#tagSearch').val().toLowerCase()).length < 1) {
+                  //if(map.getZoom() > 7){
+                      if(markers.length > 1000){
+                        clearMap();
+                      }
+                      $('#showing').html("Searching..");
+                      getDataPoints();
+                  //}
+                }
+            });
+
+            google.maps.event.addListener(map, 'bounds_changed', function(){
+                bounds = map.getBounds();
+            });
+
+            google.maps.event.addListener(infowindow, 'openclick', function(){
+                openWindow = true;
+            });
+
+            google.maps.event.addListener(infowindow, 'closeclick', function(){
+                openWindow = false;
+            });
+
+            reCluster();
+          }
+
+          function reCluster(){
+           mcOptions = {gridSize: 50, maxZoom: 12};
+           markerCluster = new MarkerClusterer(map, markers, mcOptions);
+          }
+
+          function clearMap(){
+            markerCluster.clearMarkers();
+            markers = [];
+            marker_ids = [];
+          }
+
+          function plotJob(job){
+
+            if($.inArray(job['id'], marker_ids) >= 0){
+              return;
+            }
+            else{
+            }
+            var latLng = new google.maps.LatLng(job['lat'], job['lon']);
+            var marker = new google.maps.Marker({
+              position: latLng,
+              map: map,
+              draggable: false
+            });
+
+            markers.push(marker);
+            marker_ids.push(job['id']);
+
+            marker.str =
+              "<div class='mapInfo'><h1>" + job['title'] + "</h1><p><h2>" + job['about'] + "</h2>" + "<p><audio id='audio1' controls><source src = '/" + job['rec_file'] + "'></audio><br /><br /><p><a href='/" + job['rec_file'] + "'>Download file!</a><p><i>..or..</i><p><a href='/view/" + job['id'] +"' target='_blank'>View recording</a>.<p>Location: <i>" + job['location'] +"</i></div>";
+            marker.shrt =  "<div class='mapInfo'><h1>" + job['title'] + "</h1><h2>" + job['about'] + "</h2>" +  "<h4>More Information</h4><i><b>Click</b> on the <b>pin</b> for more information!</i><p><center><b></b></center><br /></div>";
+            marker.url = job['url'];
+            marker.fprint = job['fprint'];
+
+            google.maps.event.addListener(marker, 'click', function () {
+              
+              if(map.getZoom() < 9){
+                infowindow.close(map, this);
+                map.setZoom(13);
+                infowindow.setContent(marker.str);
+                infowindow.open(marker.getMap(), this);
+                openWindow = true;
+                //window.open(marker.url, '_newtab' + marker.fprint);
+              }
+              else{
+                 infowindow.close(map, this);
+                 infowindow.setContent(marker.str);
+                 infowindow.open(marker.getMap(), this);
+                 openWindow = true;
+                 //window.open(marker.url, '_newtab' + marker.fprint);
+              }
+
+              map.setCenter(this.getPosition());
+                infowindow.setContent(marker.str);
+                infowindow.open(marker.getMap(), this);
+              });
+
+            google.maps.event.addListener(marker, 'mouseover', function () {
+              if(!openWindow){
+                  infowindow.setContent(marker.shrt);
+                  infowindow.open(marker.getMap(), this);
+              }
+            });
+
+            google.maps.event.addListener(marker, 'mouseout', function () {
+              if(!openWindow){
+                  infowindow.close(marker.getMap(), this);
+              }
+            });
+
+            markerCluster.addMarker(marker);
+
+          }
+
+          function getDataPoints(search){
+
+            var url = '/map/api/';
+            if (typeof search != 'undefined'){
+              url = url + search + '/';
+              tag = search;
+            }
+            else{
+              tag = '';
+            }
+
+            {% if location %}
+            if(first){
+              url = url + bounds[0]+ '/' + bounds[1]+ '/' + bounds[2]+ '/' + bounds[3] + '/';
+              first = false;
+            }
+            else{
+              if(bounds != null && tag.length < 1){
+                boundries = getBoundries();
+                url = url + boundries[0]+ '/' + boundries[1]+ '/' + boundries[2]+ '/' + boundries[3] + '/';
+              }
+            }
+            {% else %}
+              if(bounds != null && tag.length < 1){
+                boundries = getBoundries();
+                url = url + boundries[0]+ '/' + boundries[1]+ '/' + boundries[2]+ '/' + boundries[3] + '/';
+              }
+            {% endif %}
+
+            if(req != undefined){
+              req.abort();
+            }
+
+            req = $.getJSON(url,function(json){
+                p = json['objects'];
+                var job;
+                for(var i=0; i<p.length; i++){
+                  job = p[i];
+                  plotJob(job);
+                }
+
+                if(tag == ''){
+                  $('#showing').html("Showing " + markers.length + " recordings.");
+                }
+                else{
+                  var sm = '';
+                  if(markers.length < 1 ){
+                    sm = " :(";
+                  }
+                  $('#showing').html("Showing " + markers.length + " " + tag + " recordings." + sm);
+                }
+
+                $('#loading').hide();
+            });
+          }
+      </script>
+      <script>
+        //onload
+        jQuery(function($){
+
+          {% if location %}
+              var visitorLocation = new google.maps.LatLng(parseFloat({{location.lat}}), parseFloat({{location.lon}}));
+              bounds = [{{location.lat|add:1}}, {{location.lon|add:1}}, {{location.lat|add:-1}}, {{location.lon|add:-1}}];
+              displayMap({{location.lat}},{{location.lon}});
+              map.setCenter(visitorLocation);
+              map.setZoom(12);
+              //getDataPoints();
+          {% else %}
+                displayMap(40.850891,-96.759121);
+                getDataPoints();
+                map.setZoom(5);
+          {% endif %}
+
+          /*
+
+
+
+          This is too hard to keep a consistent experience. TODO.
+
+          if(google.loader.ClientLocation)
+          {
+            if(google.loader.ClientLocation.address.country_code == 'US'){
+              visitor_lat = google.loader.ClientLocation.latitude;
+              visitor_lon = google.loader.ClientLocation.longitude;
+              var visitorLocation = new google.maps.LatLng(parseFloat(visitor_lat), parseFloat(visitor_lon));
+              map.setCenter(visitorLocation);
+
+            }
+          }
+          else{
+            map.setZoom(5);
+          }
+          */
+
+        });
+      </script>
+
+    <div class="mapAbout">
+      <p><h1 class="mapAbout" id="ma1">Police Encounters</h1></p>
+      <p><h2 class="mapAbout" id="ma2">by OpenWatch.net</h2></p>
+    </div>
+
+    <script>
+
+      function keyDown(myfield, e){
+
+        var keycode;
+        if (window.event) keycode = window.event.keyCode;
+        else if (e) keycode = e.which;
+        else return true;
+
+        if (keycode == 13)
+         {
+         return false;
+        }
+      }
+
+      function submitter(myfield,e){
+
+        var keycode;
+        if (window.event) keycode = window.event.keyCode;
+        else if (e) keycode = e.which;
+        else return true;
+
+        $('#showing').html("Searching..");
+        var i = $.trim($('#tagSearch').val().toLowerCase());
+        clearMap();
+        if (i.length > 0){
+          getDataPoints(i);
+        }else{
+          getDataPoints();    
+        }
+
+        return true;
+    }
+    </script>
+
+  <div class="mapHolder">
+
+    <div class="mapSearch">
+          <p><form method="GET" autocomplete="off"><input id="tagSearch" class="mapAbout" type="text" name="" placeholder="Search tags!" onKeyUp="return submitter(this,event)" onKeyDown="return keyDown(this,event)" /></form></p>
+
+          <p><span id="showing">Loading recordings.. </span> ({{total}} total.)
+
+          {% if tag %}
+            <script>
+              jQuery(function($){
+                  $('#tagSearch').val('{{tag}}');
+                });
+            </script>
+          {% endif %}
+    </div>
+
+    <div class="mapSearch" id="loading" style="top: 50%; font-size: 3em;">
+          <center><b>Loading recordings..</b></center>
+    </div>
+
+
+    <script>
+      $("#ma1").fitText();
+      $("#ma2").fitText();
+    </script>
+
+    <script>
+      $("#hi1").fitText();
+      $("#hi2").fitText();
+    </script>
+
+    <!-- <div class="mapHiring">
+      <p id="hi1">
+      <p id="hi2"><a class="mapHiring" href="/careers/new/"><br />Post a job!</a></p>
+    </div> -->
+
+    <script>
+      $("#hi1").fitText();
+      $("#hi2").fitText();
+    </script>
+
+    <div class="mapSignup">
+      <p id="si1">Zoom and search<br/>
+      to see more recordings!<br />
+    </div>
+
+    <script>
+      $("#si1").fitText();
+    </script>
+
+    <div class="mapShare">
+                      <!-- AddThis Button BEGIN -->
+      <div class="addthis_toolbox addthis_default_style">
+        <a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
+        <a style="padding-bottom: 4px;" class="addthis_button_tweet" tw:via="Police Encounters" tw:text="Awesome! Police encounters live: "></a>
+        <a class="addthis_button_google_plusone" g:plusone:size="medium"></a>
+      </div>
+      <script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js#async=1"></script>
+      <script type="text/javascript"> 
+        //disable clicktracking? note: if true, remove url from twtext
+        var addthis_config = {
+             data_track_clickback: true 
+        } 
+        </script> 
+      <!-- AddThis Button END -->
+    </div>
+    <script>
+      jQuery(function($){
+          addthis.init();
+        });
+    </script>
+
+
+
+</div>
+
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-24979378-6']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+</body>
+</html>
