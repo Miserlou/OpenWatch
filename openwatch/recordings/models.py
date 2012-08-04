@@ -1,6 +1,7 @@
 from django.db import models
 from django.core.files.storage import FileSystemStorage
 from django.core.mail import send_mail
+from django.contrib.auth.models import User
 from django.forms import ModelForm
 from datetime import datetime
 from django import forms
@@ -11,6 +12,11 @@ from captcha.fields import CaptchaField
 
 ulpath = 'openwatch/uploads/recordings/'
 attachment_file_storage = FileSystemStorage(location=settings.UPLOAD_ROOT, base_url='recordings')
+
+
+class UserProfile(models.Model):
+    user = models.OneToOneField(User)
+    can_moderate = models.BooleanField(default=False)
 
 # Create your models here.
 class Recording(models.Model):
@@ -37,8 +43,8 @@ class Recording(models.Model):
         super(Recording, self).save()
 
         # New recording, let me know about it
-        if not self.approved and int(self.rec_file.file.size) > 204800:
-            send_mail('New recording: ' + self.name, 'Public: \n ' + self.public_description + 'Private: \n' + self.private_description + '\nSize:\n:' + str(self.rec_file.file.size) + '\nFile: ' + str(self.rec_file) + ' ' + str(self.file_loc) + "\nMIME: " + str(self.mimetype), 'openwatchnotifier@gmail.com', ['rich@anomos.info'], fail_silently=False)
+        #if not self.approved and int(self.rec_file.file.size) > 204800:
+        #    send_mail('New recording: ' + self.name, 'Public: \n ' + self.public_description + 'Private: \n' + self.private_description + '\nSize:\n:' + str(self.rec_file.file.size) + '\nFile: ' + str(self.rec_file) + ' ' + str(self.file_loc) + "\nMIME: " + str(self.mimetype), 'openwatchnotifier@gmail.com', ['rich@anomos.info'], fail_silently=False)
 
         #XXX: Move the shit to static if approved!
         if len(self.vimeo) == 0 and self.approved and "video" in self.mimetype:

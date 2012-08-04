@@ -44,6 +44,8 @@ USE_I18N = True
 # calendars according to the current locale
 USE_L10N = True
 
+AUTH_PROFILE_MODULE = 'recordings.UserProfile'
+
 # Absolute path to the directory that holds media.
 # Example: "/home/media/media.lawrence.com/"
 #MEDIA_ROOT = '/home/tuttle/Projects/openwatch/openwatch/static/'
@@ -54,7 +56,15 @@ MEDIA_ROOT = '/Users/davidbrodsky/Documents/django/OpenWatch/static/'
 # Examples: "http://media.lawrence.com", "http://example.com/media/"
 MEDIA_URL = 'http://openwatch.net/static/'
 
-UPLOAD_ROOT = '/var/www/openwatch/uploads/'
+#UPLOAD_ROOT = '/var/www/openwatch/uploads/'
+UPLOAD_ROOT = 'Users/davidbrodsky/Documents/django/OpenWatch_static/uploads'
+
+STATIC_URL = '/static/'
+STATIC_ROOT = '/Users/davidbrodsky/Documents/django/OpenWatch_static'
+
+STATICFILES_DIRS = (
+    "/Users/davidbrodsky/Documents/django/OpenWatch/static/",
+)
 
 # URL prefix for admin media -- CSS, JavaScript and images. Make sure to use a
 # trailing slash.
@@ -97,6 +107,7 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.sites',
     'django.contrib.messages',
+    'django.contrib.staticfiles',
     # Uncomment the next line to enable the admin:
      'django.contrib.admin',
     # Uncomment the next line to enable admin documentation:
@@ -112,11 +123,11 @@ INSTALLED_APPS = (
 CAPTCHA_FONT_SIZE = 42
 CAPTCHA_LETTER_ROTATION = None
 
-EMAIL_USE_TLS = True
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_HOST_USER = 'bigvagitabluntz420@gmail.com'
-EMAIL_HOST_PASSWORD = 'incangold'
-EMAIL_PORT = 587
+#EMAIL_USE_TLS = True
+#EMAIL_HOST = 'smtp.gmail.com'
+#EMAIL_HOST_USER = 'bigvagitabluntz420@gmail.com'
+#EMAIL_HOST_PASSWORD = 'incangold'
+#EMAIL_PORT = 587
 
 try:
     from local_settings import *

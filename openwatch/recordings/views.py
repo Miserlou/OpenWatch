@@ -1,6 +1,7 @@
+import json
 from django.http import HttpResponseRedirect, HttpResponseNotFound
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import get_object_or_404, render_to_response
+from django.shortcuts import get_object_or_404, render_to_response, Http404, HttpResponse
 from datetime import datetime
 from tagging.models import Tag, TaggedItem
 from django.views.decorators.csrf import csrf_exempt
@@ -26,10 +27,6 @@ def contact(request):
 def join(request):
     featureset = Recording.objects.filter(featured=True).all().order_by('-date')
     return render_to_response('join.html', {'featured': list(featureset)[0:5], 'cat': 'join' })
-
-@login_required
-def moderate(request):
-    return render_to_response('moderate.html')
 
 def upload(request):
     if request.method == 'POST': # If the form has been submitted...
@@ -99,8 +96,9 @@ def view(request, media_id):
     recording = get_object_or_404(Recording, pk=media_id)
     queryset = Recording.objects.filter(approved=True).all().order_by('-date')
     featureset = Recording.objects.filter(featured=True).all().order_by('-date')
-    if not recording.approved:
-       return HttpResponseNotFound('<h1>No Page Here</h1>')
+    print request.user.get_profile().can_moderate
+    #if not recording.approved:
+    #   return HttpResponseNotFound('<h1>No Page Here</h1>')
     return render_to_response('view.html', {'recording': recording, 'featured': list(featureset)[0:5], 'cat': 'media'})
 
 def tags(request):
@@ -114,3 +112,16 @@ def with_tag(request, tag, object_id=None, page=1):
     featureset = Recording.objects.filter(featured=True).all().order_by('-date')
     return render_to_response("with_tag.html", {'tag': tag, 'entries': entries, 'featured': list(featureset)[0:5], 'cat': 'media'})
 
+
+''' AJAX API
+'''
+
+
+def approve(request, media_id):
+    if request.user.get_profile().can_moderate:
+        recording = get_object_or_404(Recording, pk=media_id)
+        recording.approved = True
+        recording.save()
+        return HttpResponse(json.dumps({'status': 'success'}), mimetype="application/json")
+    else:
+        return HttpResponse(json.dumps({'status': 'failure'}), mimetype="application/json")
