@@ -17,6 +17,8 @@ class Recording(models.Model):
     name = models.CharField(max_length=200)
     date = models.DateTimeField('date uploaded', blank=True, default=datetime.now())
     location = models.CharField(max_length='200')
+    lat = models.FloatField(null=True, blank=True)
+    lon = models.FloatField(null=True, blank=True)
     vimeo = models.CharField(max_length='200', blank=True)
     vimeo_dl = models.CharField(max_length='200', blank=True)
     liveleak = models.CharField(max_length='200', blank=True)
@@ -90,6 +92,12 @@ class RecordingNoCaptchaForm(ModelForm):
         self.bound_object.public_description = self.cleaned_data['public_description']
         self.bound_object.private_description = self.cleaned_data['private_description']
         self.bound_object.location = self.cleaned_data['location']
+
+        if ',' in self.cleaned_data['location']:
+            latlon = self.cleaned_data['location'].split(',')
+            self.bound_object.lat = latlon[0].strip()
+            self.bound_object.lon = latlon[1].strip()
+            
         self.bound_object.date = datetime.now()
         self.bound_object.file_loc = ulpath + stored_name
         self.bound_object.save() 
