@@ -104,8 +104,8 @@ def map_location_json(request, ne_lat=0, ne_lon=0, sw_lat=0, sw_lon=0):
     sw_lat = float(sw_lat)
     sw_lon = float(sw_lon)
 
-    #featureset = Recording.objects.filter(lat__lt=ne_lat, lat__gt=sw_lat,lon__lt=ne_lon, lon__gt=sw_lon).order_by('-date')
-    featureset = Recording.objects.order_by('-date').exclude(location__isnull=True).exclude(location__exact='').exclude(location__exact='No description available').exclude(location__exact='0.0, 0.0')[:750]
+    featureset = Recording.objects.filter(lat__lt=ne_lat, lat__gt=sw_lat,lon__lt=ne_lon, lon__gt=sw_lon).order_by('-date').exclude(location__isnull=True).exclude(location__exact='').exclude(location__exact='No description available').exclude(location__exact='0.0, 0.0')[:750]
+    #featureset = Recording.objects.order_by('-date').exclude(location__isnull=True).exclude(location__exact='').exclude(location__exact='No description available').exclude(location__exact='0.0, 0.0')[:750]
 
     if len(featureset) < 1:
         return HttpResponse("{\"objects\":[]}", mimetype="application/json")
