@@ -53,8 +53,7 @@ table {
             // id is in format 'tablerow-#'
             media_id = String($(this).attr('id').split('-')[1]);
             map.setCenter(markers[id_to_marker_map[media_id]].getPosition());
-            if(map.getZoom() < 6)
-              map.setZoom(15);
+            map.setZoom(15);
           });
 
           // Approving logic
@@ -350,7 +349,7 @@ table {
             else{
               tag = '';
             }
-
+            /* Location querying not yet implemented
             {% if location %}
             if(first){
               url = url + bounds[0]+ '/' + bounds[1]+ '/' + bounds[2]+ '/' + bounds[3] + '/';
@@ -368,7 +367,7 @@ table {
                 url = url + boundries[0]+ '/' + boundries[1]+ '/' + boundries[2]+ '/' + boundries[3] + '/';
               }
             {% endif %}
-
+            */
             if(req != undefined){
               req.abort();
             }
@@ -406,8 +405,8 @@ table {
               bounds = [{{location.lat|add:1}}, {{location.lon|add:1}}, {{location.lat|add:-1}}, {{location.lon|add:-1}}];
               displayMap({{location.lat}},{{location.lon}});
               map.setCenter(visitorLocation);
-              map.setZoom(12);
-              //getDataPoints();
+              map.setZoom(9);
+              getDataPoints();
           {% else %}
                 displayMap(40.850891,-96.759121);
                 getDataPoints();

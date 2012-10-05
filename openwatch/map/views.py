@@ -18,20 +18,33 @@ from django.db.models import Q
 import json
 
 from openwatch.recordings.models import Recording
+from openwatch import recording_tags
+
 
 @login_required
 def moderate(request):
-    '''  Split view map/recording moderation 
+    '''  Split  map/table recording moderation.
+         Requires user is a superuser or has an org tag and can_moderate=True
     '''
-    #featureset = Recording.objects.filter(~Q(lat=None), ~Q(lon=None), ~Q(jtype='organic')).order_by('-date')
-    #total = len(featureset)
+
+    response_values = {}
+
     org_tag = request.user.get_profile().org_tag
-    # If the user doesn't have an org tag, bounce 'em
-    print 'can_moderate: ' + str(request.user.get_profile().can_moderate) + ' org_tag: ' + str(org_tag)
+    # If the user isn't a superuser or doesn't have an org tag w/ moderation privilege, bounce 'em
+    #print 'can_moderate: ' + str(request.user.get_profile().can_moderate) + ' org_tag: ' + str(org_tag)
     if not request.user.is_superuser and (not request.user.get_profile().can_moderate or org_tag == ''):
         raise Http404
-    total = "lots!"
-    return render_to_response('moderate.html', {'total': total}, context_instance=RequestContext(request))
+
+    if recording_tags.ACLU_NJ in org_tag:
+        # Center on New Jersey
+        location = {}
+        location['lat'] = 40.167274
+        location['lon'] = -74.616338
+        response_values['location'] = location
+
+    response_values['total'] = 'lots!'
+
+    return render_to_response('moderate.html', response_values, context_instance=RequestContext(request))
 
 
 
