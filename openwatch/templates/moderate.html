@@ -50,8 +50,13 @@ table {
 
           // Center map on marker when hovering over corresponding list row
           $('#recording-table').on('hover', '.tablerow', function(e){
+            // Highlight this table row
+            $('.tablerow').removeClass('selected');
+            $(this).addClass('selected');
+
             // id is in format 'tablerow-#'
             media_id = String($(this).attr('id').split('-')[1]);
+            // Center and Zoom map to corresponding marker
             map.setCenter(markers[id_to_marker_map[media_id]].getPosition());
             map.setZoom(15);
           });
