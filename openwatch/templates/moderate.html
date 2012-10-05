@@ -38,13 +38,10 @@ table {
 <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
 <script type="text/javascript" src="http://www.google.com/jsapi?key=ABQIAAAAp04yNttlQq-7b4aZI_jL5hQYPm-xtd00hTQOC0OXpAMO40FHAxQMnH50uBbWoKVHwgpklyirDEregg"></script>
 <script type="text/javascript" src="/static/markerclusterer_packed.js"></script>
-<div id="realmap" class="single_map" style="width:50%; height:100%; float:left; margin: 0 auto; padding: 0; position: relative;"></div>
-<div id="recording-view" style="text-align:center; margin-left:auto; margin-right:auto; padding: 10px; position: relative;">
+<div id="realmap" class="single_map" style="display:inline-block; width:50%; height:100%; float:left; margin: 0 auto; padding: 0; position: relative;"></div>
+<div id="recording-view" style="text-align:center; margin-left:auto; margin-right:auto; padding: 10px;">
   <h1>Unapproved Recordings</h1>
-  <p> Browse approved recordings <a href="/admin/recordings/recording/">here</a>.
-    <br/>
-    <a href="#" onclick="resetMap()">Reset Map</a>
-  </p>
+  <p><a href="/admin/recordings/recording/">Browse approved recordings</a> | <a href="#" onclick="resetMap()">Reset Map</a> </p>
   <table id="recording-table">
     <tr class="table-heading"><td>Title</td><td>Description</td><td>File</td><td>Location</td><td>Date</td><td>Approve</td></tr>
   </table>
@@ -62,8 +59,18 @@ table {
             // id is in format 'tablerow-#'
             media_id = String($(this).attr('id').split('-')[1]);
             // Center and Zoom map to corresponding marker
-            map.setCenter(markers[id_to_marker_map[media_id]].getPosition());
+            centerMapWithOffset(map, markers[id_to_marker_map[media_id]]);
             map.setZoom(12);
+          });
+
+          // Activate marker click event when corresponding table row clicked
+          $('#recording-table').on('click', '.tablerow', function(e){
+            // id is in format 'tablerow-#'
+            media_id = String($(this).attr('id').split('-')[1]);
+            // Center and Zoom map to corresponding marker
+            marker = markers[id_to_marker_map[media_id]];
+            google.maps.event.trigger(instance=marker, eventName='click');
+
           });
 
           // Approving logic
@@ -270,7 +277,7 @@ table {
             // Title | Desc | file | location
             */
             //$('#recording-table tr:last').after('<tr> <td>' + title + '</td> <td>' + description + ' </td></tr>');
-            $('#recording-table tr:last').after('<tr class=\"tablerow\" id=\"tablerow-' + recording['id'] + '\"> <td>' + recording['title'] + '</td> <td>' + recording['about'] + ' </td> <td><a href=\"/' + recording['rec_file'] + '\">link</a></td> <td id=\"locationcol-' + recording['id'] + '\">' + recording['lat'] +', ' + recording['lon'] + ' </td><td>' + recording['date'] + ' <td><a class=\"org-approve\" id=\"approve-' + recording['id'] + '\" href=\"#\">Approve</td></tr>');
+            $('#recording-table tr:last').after('<tr class=\"tablerow\" id=\"tablerow-' + recording['id'] + '\"> <td>' + recording['title'] + '</td> <td>' + recording['about'] + ' </td> <td><a href=\"{{MEDIA_URL}}' + recording['rec_file'] + '\">link</a></td> <td id=\"locationcol-' + recording['id'] + '\">' + recording['lat'] +', ' + recording['lon'] + ' </td><td>' + recording['date'] + ' <td><a class=\"org-approve\" id=\"approve-' + recording['id'] + '\" href=\"#\">Approve</td></tr>');
 
             
 
@@ -317,8 +324,7 @@ table {
                  openWindow = true;
                  //window.open(marker.url, '_newtab' + marker.fprint);
               }
-
-              map.setCenter(this.getPosition());
+              centerMapWithOffset(map, marker);
                 infowindow.setContent(marker.str);
                 infowindow.open(marker.getMap(), this);
               });
@@ -446,6 +452,8 @@ table {
 
         });
 
+
+        // Restores map to original centering and zoom level
         function resetMap(){
           var visitorLocation = new google.maps.LatLng(parseFloat({{location.lat}}), parseFloat({{location.lon}}));
               bounds = [{{location.lat|add:1}}, {{location.lon|add:1}}, {{location.lat|add:-1}}, {{location.lon|add:-1}}];
@@ -454,6 +462,18 @@ table {
               map.setZoom(9);
 
         }
+
+        // Centers map on marker, adding a 
+        // latitude offset to ensure popup window isn't obscured
+        function centerMapWithOffset(map, marker){
+          // let's set the position a fixed distance above
+          // that marker so the popup window isn't obscured
+          lat_offset = .015;
+          centerLatLng = new google.maps.LatLng(lat=marker.getPosition().lat() + lat_offset,lng=marker.getPosition().lng());
+
+          map.setCenter(centerLatLng);
+        }
+
       </script>
 <!--
     <div class="mapAbout">
