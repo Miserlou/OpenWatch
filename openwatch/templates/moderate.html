@@ -72,16 +72,10 @@ table {
                      lat = lat_lon[0];
                      lon = lat_lon[1];
                      console.log('Remove marker:');
-                      var g_lat_lon = new google.maps.LatLng(lat, lon);
-                      var marker = new google.maps.Marker({
-                        position: g_lat_lon,
-                        map: map,
-                        draggable: false
-                      });
-                      console.log(marker);
-                      idx = markers.indexOf(marker); // Find the index
-                      console.log(idx); // returns -1 :(
-                      if(idx!=-1) markers.splice(idx, 1); // Remove it if really found!
+
+                      idx = id_to_marker_map[media_id]; // Find the index
+                      console.log(markers[idx]);
+                      markers[idx].setMap(null); // hide corresponding marker
                     }
                   },
                   type: 'POST'
@@ -129,7 +123,10 @@ table {
           var map;
           var markers = [];
           var marker_ids = [];
+
+          // Dict of recording id -> index in markers of corresponding marker
           var id_to_marker_map = {};
+
           var mcOptions;
           var markerCluster = new MarkerClusterer(map, markers);
           var tag = '';
@@ -276,6 +273,7 @@ table {
             });
             markers.push(marker);
             marker_ids.push(job['id']);
+            id_to_marker_map[job['id']] = markers.indexOf(marker);
 
             marker.str =
               "<div class='mapInfo'><h1>" + job['title'] + "</h1><p><h2>" + job['about'] + "</h2>" + "<p><audio id='audio1' controls><source src = '/" + job['rec_file'] + "'></audio><br /><br /><p><a href='/" + job['rec_file'] + "'>Download file!</a><p><i>..or..</i><p><a href='/view/" + job['id'] +"' target='_blank'>View recording</a>.<p>Location: <i>" + job['location'] +"</i></div>";
@@ -285,7 +283,7 @@ table {
               // Highlight the corresponding table row
               $('.tablerow').removeClass('selected');
               $('#tablerow-' + job['id']).addClass('selected');
-              
+
               if(map.getZoom() < 9){
                 infowindow.close(map, this);
                 map.setZoom(13);
