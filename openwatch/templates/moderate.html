@@ -39,8 +39,13 @@ table {
 <script type="text/javascript" src="http://www.google.com/jsapi?key=ABQIAAAAp04yNttlQq-7b4aZI_jL5hQYPm-xtd00hTQOC0OXpAMO40FHAxQMnH50uBbWoKVHwgpklyirDEregg"></script>
 <script type="text/javascript" src="/static/markerclusterer_packed.js"></script>
 <div id="realmap" class="single_map" style="width:50%; height:100%; float:left; margin: 0 auto; padding: 0; position: relative;"></div>
-<div id="recording-view" style="margin: 0 auto; padding: 10px; position: relative;">
-  <table id="recording-table" >
+<div id="recording-view" style="text-align:center; margin-left:auto; margin-right:auto; padding: 10px; position: relative;">
+  <h1>Unapproved Recordings</h1>
+  <p> Browse approved recordings <a href="/admin/recordings/recording/">here</a>.
+    <br/>
+    <a href="#" onclick="resetMap()">Reset Map</a>
+  </p>
+  <table id="recording-table">
     <tr class="table-heading"><td>Title</td><td>Description</td><td>File</td><td>Location</td><td>Date</td><td>Approve</td></tr>
   </table>
 </div>
@@ -58,7 +63,7 @@ table {
             media_id = String($(this).attr('id').split('-')[1]);
             // Center and Zoom map to corresponding marker
             map.setCenter(markers[id_to_marker_map[media_id]].getPosition());
-            map.setZoom(15);
+            map.setZoom(12);
           });
 
           // Approving logic
@@ -440,6 +445,15 @@ table {
           */
 
         });
+
+        function resetMap(){
+          var visitorLocation = new google.maps.LatLng(parseFloat({{location.lat}}), parseFloat({{location.lon}}));
+              bounds = [{{location.lat|add:1}}, {{location.lon|add:1}}, {{location.lat|add:-1}}, {{location.lon|add:-1}}];
+              displayMap({{location.lat}},{{location.lon}});
+              map.setCenter(visitorLocation);
+              map.setZoom(9);
+
+        }
       </script>
 <!--
     <div class="mapAbout">
