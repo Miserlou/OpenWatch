@@ -47,16 +47,25 @@ table {
           <script>
           var csrftoken = getCookie('csrftoken');
           setupAjax();
+
+          // Center map on marker when hovering over corresponding list row
+          $('#recording-table').on('hover', '.tablerow', function(e){
+            // id is in format 'tablerow-#'
+            media_id = String($(this).attr('id').split('-')[1]);
+            map.setCenter(markers[id_to_marker_map[media_id]].getPosition());
+            if(map.getZoom() < 6)
+              map.setZoom(15);
+          });
+
           // Approving logic
           // set up approve click listener
-
-            $('#recording-table').on('click', '.org-approve', function(e){
-              e.preventDefault();
-              // id is in format 'approve-#'
-              media_id = String($(this).attr('id').split('-')[1]);
-              console.log("Org-approving " + media_id);
-              org_approve(media_id);
-            });
+          $('#recording-table').on('click', '.org-approve', function(e){
+            e.preventDefault();
+            // id is in format 'approve-#'
+            media_id = String($(this).attr('id').split('-')[1]);
+            console.log("Org-approving " + media_id);
+            org_approve(media_id);
+          });
 
             function org_approve(media_id){
               $.ajax({
@@ -317,10 +326,10 @@ table {
             });
 
             google.maps.event.addListener(marker, 'mouseout', function () {
-              // Remove table row highlighting
-              $('.tablerow').removeClass('selected');
-
               if(!openWindow){
+                  // Remove table row highlighting on mouseout only if
+                  // popup Window has been closed
+                  $('.tablerow').removeClass('selected');
                   infowindow.close(marker.getMap(), this);
               }
             });
