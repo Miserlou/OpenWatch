@@ -13,17 +13,32 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login
 from django.core.mail import send_mail
 from django.conf import settings
+from django.http import Http404
 from django.db.models import Q
 import json
 
 from openwatch.recordings.models import Recording
+
+@login_required
+def moderate(request):
+    '''  Split view map/recording moderation 
+    '''
+    #featureset = Recording.objects.filter(~Q(lat=None), ~Q(lon=None), ~Q(jtype='organic')).order_by('-date')
+    #total = len(featureset)
+    org_tag = request.user.get_profile().org_tag
+    # If the user doesn't have an org tag, bounce 'em
+    if not request.user.is_superuser or org_tag != '':
+        raise Http404
+    total = "lots!"
+    return render_to_response('moderate.html', {'total': total}, context_instance=RequestContext(request))
+
 
 
 def map(request):
     #featureset = Recording.objects.filter(~Q(lat=None), ~Q(lon=None), ~Q(jtype='organic')).order_by('-date')
     #total = len(featureset)
     total = "lots!"
-    return render_to_response('map.html', {'total': total}, context_instance=RequestContext(request)) 
+    return render_to_response('map.html', {'total': total}, context_instance=RequestContext(request))
 
 # def map_zipcode(request, zipcode):
 #     #featureset = Recording.objects.filter(~Q(lat=None), ~Q(lon=None), ~Q(jtype='organic')).order_by('-date')

@@ -6,6 +6,8 @@ from datetime import datetime
 from tagging.models import Tag, TaggedItem
 from django.views.decorators.csrf import csrf_exempt
 
+import recording_tags
+
 from openwatch.recordings.models import Recording, RecordingForm, RecordingNoCaptchaForm
 
 def root(request):
@@ -36,7 +38,7 @@ def upload(request):
             # XXX: Check filetypes, etc
 
             form.save()
-            return HttpResponseRedirect('/openwatch/victory') # Redirect after POST
+            return HttpResponseRedirect('/victory') # Redirect after POST
         else:
             print "Shiiiiit"
     else:
@@ -55,9 +57,13 @@ def upload_no_captcha(request):
         recording = Recording()
         # Check if recording submitted by ACLU-NJ Police Tape 
         # These recording filenames are of form XXXX_aclunj.XXX
-        if "_aclunj." in request.FILES['rec_file'].name:
+        print 'checking ' + str(request.FILES['rec_file'].name)
+        tag = recording_tags.ACLU_NJ
+        if "_aclunj." in str(request.FILES['rec_file'].name):
+            print str(request.FILES['rec_file'].name) + ' will be tagged with ' + tag
+            recording.add_tag(tag)
             # Police Tape appends email to existing privDesc:
-            # privDesc = privDesc + "[" + email+"]";
+            # privDesc = privDesc + "[" + email + "]";
             try:
                 recording.email = request.POST.get('private_description', '').rsplit("[", 1)[1].rsplit("]", 1)[0]
                 recording.private_description = request.POST.get('private_description', 'No description available').rsplit("[", 1)[0]
@@ -73,9 +79,9 @@ def upload_no_captcha(request):
         recording.rec_file = request.FILES['rec_file']
         recording.date = datetime.now()
         recording.save()
-        return HttpResponseRedirect('/openwatch/victory') # Redirect after POST
+        return HttpResponseRedirect('/victory')  # Redirect after POST
     else:
-        form = RecordingNoCaptchaForm() # An unbound form
+        form = RecordingNoCaptchaForm()  # An unbound form
 
     featureset = Recording.objects.filter(featured=True).all().order_by('-date')
     return render_to_response('upload_nocaptcha.html', {
@@ -96,7 +102,7 @@ def view(request, media_id):
     recording = get_object_or_404(Recording, pk=media_id)
     queryset = Recording.objects.filter(approved=True).all().order_by('-date')
     featureset = Recording.objects.filter(featured=True).all().order_by('-date')
-    print request.user.get_profile().can_moderate
+    #print request.user.get_profile().can_moderate
     #if not recording.approved:
     #   return HttpResponseNotFound('<h1>No Page Here</h1>')
     return render_to_response('view.html', {'recording': recording, 'featured': list(featureset)[0:5], 'cat': 'media'})
@@ -117,11 +123,44 @@ def with_tag(request, tag, object_id=None, page=1):
 '''
 
 
+@login_required
 def approve(request, media_id):
-    if request.user.get_profile().can_moderate:
+    ''' Approve a recording at the top-level
+        Once Approved, it will appear on OpenWatch.net
+
+        To Approve, a user must have can_moderate true and
+        have no organizational tags
+    '''
+    org_tag = request.user.get_profile().org_tag
+
+    if request.user.get_profile().can_moderate and org_tag == '':
         recording = get_object_or_404(Recording, pk=media_id)
         recording.approved = True
         recording.save()
         return HttpResponse(json.dumps({'status': 'success'}), mimetype="application/json")
     else:
         return HttpResponse(json.dumps({'status': 'failure'}), mimetype="application/json")
+
+
+@login_required
+def org_approve(request, media_id):
+    ''' Approve a recording at the organizational level
+        Org approval should be considered by admins
+        Before top-level approval for display on OpenWatch.net
+        with organizational affiliation
+
+        To Approve, a user must have can_moderate true and
+        an organizational tag matching a tag held by the Recording with pk=media_id
+    '''
+    org_tag = request.user.get_profile().org_tag
+
+    recording = get_object_or_404(Recording, pk=media_id)
+
+    if org_tag in recording.tags and request.user.get_profile().can_moderate:
+        recording = get_object_or_404(Recording, pk=media_id)
+        recording.org_approved = True
+        recording.save()
+        return HttpResponse(json.dumps({'status': 'success'}), mimetype="application/json")
+    else:
+        return HttpResponse(json.dumps({'status': 'failure'}), mimetype="application/json")
+
