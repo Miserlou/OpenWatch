@@ -54,7 +54,7 @@ jQuery(function($){
         $(".approve-button").html('Aproving...');
         $('.approve-button').attr("disabled", "disabled");
         
-        $.getJSON("/recording/{{recording.pk}}/approve",function(json){
+        $.getJSON("/approve/{{recording.pk}}",function(json){
                 if(json['status'] === "success"){
                     $(".approve-button").html('Approved!');
                     $(".not-approved").fadeOut('fast', function(){

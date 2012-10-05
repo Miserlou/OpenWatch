@@ -11,8 +11,8 @@ urlpatterns = patterns('',
      url(r'^uploadnocaptcha/', 'openwatch.recordings.views.upload_no_captcha', name='upload_no_captcha'),
      url(r'^victory$', 'openwatch.recordings.views.victory', name='victory'),
      # Ajax API:
-     url(r'^approve$', 'openwatch.recordings.views.approve', name='approve'),  # For top-level approval
-     url(r'^org-approve$', 'openwatch.recordings.views.org_approve', name='org_approve'),  # For organizational approval
+     url(r'^approve/(?P<media_id>\d+)$', 'openwatch.recordings.views.approve', name='approve'),  # For top-level approval
+     url(r'^org-approve/(?P<media_id>\d+)$', 'openwatch.recordings.views.org_approve', name='org_approve'),  # For organizational approval
 
      (r'^all/', 'openwatch.recordings.views.listall'),
      (r'^about/', 'openwatch.recordings.views.about'),

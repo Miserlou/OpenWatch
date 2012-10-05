@@ -27,7 +27,8 @@ def moderate(request):
     #total = len(featureset)
     org_tag = request.user.get_profile().org_tag
     # If the user doesn't have an org tag, bounce 'em
-    if not request.user.is_superuser or org_tag != '':
+    print 'can_moderate: ' + str(request.user.get_profile().can_moderate) + ' org_tag: ' + str(org_tag)
+    if not request.user.is_superuser and (not request.user.get_profile().can_moderate or org_tag == ''):
         raise Http404
     total = "lots!"
     return render_to_response('moderate.html', {'total': total}, context_instance=RequestContext(request))
@@ -69,12 +70,22 @@ def redir(self):
 #     entries = TaggedItem.objects.get_by_model(Recording, query_tag)
 #     featureset = entries.filter(~Q(lat=None), ~Q(lon=None),).order_by('-date')
 
-    
+
 #     return render_to_response('map.html', {'jobs': featureset, 'numcareers': len(featureset), 'tag': tag}, context_instance=RequestContext(request))
 
-def map_json(request):
+def map_json(request, moderate=0):
+
+    featureset = Recording.objects.all()
+    # If moderating, only return recordings that are not org-approved
+    # And that are tagged with the user's organization tag
+    if int(moderate) == 1 and request.user.is_authenticated():
+        org_tag = request.user.get_profile().org_tag
+        if org_tag != '':
+            #print 'Org tag: ' + org_tag
+            featureset = featureset.filter(org_approved=False, tags__contains=org_tag)
+
     #featureset = Recording.objects.filter(~Q(lat=None), ~Q(lon=None), ~Q(jtype='organic')).order_by('-date')[:1000]
-    featureset = Recording.objects.all().order_by('-date').filter(~Q(location='')).exclude(location__isnull=True).exclude(location__exact='')[:750]
+    featureset = featureset.order_by('-date').filter(~Q(location='')).exclude(location__isnull=True).exclude(location__exact='')[:750]
     resp = encode_queryset(featureset)
     return HttpResponse(resp, mimetype="application/json")
 

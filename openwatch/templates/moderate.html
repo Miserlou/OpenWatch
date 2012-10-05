@@ -25,8 +25,11 @@ td{
   font-weight:bold;
 }
 table {
-    table-layout : fixed;
-    text-align:center;
+  table-layout : fixed;
+  text-align:center;
+}
+.selected{
+  background-color:#F0D9BE;
 }
 </style>
 </head>
@@ -49,18 +52,37 @@ table {
 
             $('#recording-table').on('click', '.org-approve', function(e){
               e.preventDefault();
-              
               // id is in format 'approve-#'
-              id = String($(this).attr('id').split('-')[1]);
-              console.log("Org-approving " + id);
-              org_approve(id);
+              media_id = String($(this).attr('id').split('-')[1]);
+              console.log("Org-approving " + media_id);
+              org_approve(media_id);
             });
 
-            function org_approve(id){
+            function org_approve(media_id){
               $.ajax({
-                  url: "/org-approve/"+id,
+                  url: "/org-approve/"+media_id,
                   success: function(data){
-                    console.log(data);
+                    //console.log(data);
+                    if(data.status === 'success'){
+                      // remove recording from list
+                      $('#tablerow-' + media_id).slideUp('slow');
+
+                     lat_lon = $.trim($('#locationcol-' + media_id).html());
+                     lat_lon = lat_lon.split(',')
+                     lat = lat_lon[0];
+                     lon = lat_lon[1];
+                     console.log('Remove marker:');
+                      var g_lat_lon = new google.maps.LatLng(lat, lon);
+                      var marker = new google.maps.Marker({
+                        position: g_lat_lon,
+                        map: map,
+                        draggable: false
+                      });
+                      console.log(marker);
+                      idx = markers.indexOf(marker); // Find the index
+                      console.log(idx); // returns -1 :(
+                      if(idx!=-1) markers.splice(idx, 1); // Remove it if really found!
+                    }
                   },
                   type: 'POST'
               });
@@ -107,6 +129,7 @@ table {
           var map;
           var markers = [];
           var marker_ids = [];
+          var id_to_marker_map = {};
           var mcOptions;
           var markerCluster = new MarkerClusterer(map, markers);
           var tag = '';
@@ -154,7 +177,7 @@ table {
               if(map.getBounds() != undefined){
                 bounds = map.getBounds();
               }
-              
+              /* Tag search not yet implemented
               if ($.trim($('#tagSearch').val().toLowerCase()).length < 1) {
                 if(map.getZoom() >= 6){
                     if(markers.length > 1300){
@@ -169,13 +192,14 @@ table {
                     $('#showing').html("Searching..");
                     getDataPoints();
                   }
-              }
+              }*/
               lastZoom = map.getZoom();
               bounds = map.getBounds(); 
             });
 
             google.maps.event.addListener(map, 'dragend', function(){
                 bounds = map.getBounds(); 
+                /* Tag search not yet implemented 
                 if ($.trim($('#tagSearch').val().toLowerCase()).length < 1) {
                   //if(map.getZoom() > 7){
                       if(markers.length > 1000){
@@ -184,7 +208,7 @@ table {
                       $('#showing').html("Searching..");
                       getDataPoints();
                   //}
-                }
+                } */
             });
 
             google.maps.event.addListener(map, 'bounds_changed', function(){
@@ -231,7 +255,7 @@ table {
             // Title | Desc | file | location
             */
             //$('#recording-table tr:last').after('<tr> <td>' + title + '</td> <td>' + description + ' </td></tr>');
-            $('#recording-table tr:last').after('<tr> <td>' + recording['title'] + '</td> <td>' + recording['about'] + ' </td> <td><a href=\"/' + recording['rec_file'] + '\">link</a></td> <td>' + recording['lat'] +', ' + recording['lon'] + ' </td><td>' + recording['date'] + ' <td><a class=\"org-approve\" id=\"approve-' + recording['id'] + '\" href=\"#\">Approve</td></tr>');
+            $('#recording-table tr:last').after('<tr class=\"tablerow\" id=\"tablerow-' + recording['id'] + '\"> <td>' + recording['title'] + '</td> <td>' + recording['about'] + ' </td> <td><a href=\"/' + recording['rec_file'] + '\">link</a></td> <td id=\"locationcol-' + recording['id'] + '\">' + recording['lat'] +', ' + recording['lon'] + ' </td><td>' + recording['date'] + ' <td><a class=\"org-approve\" id=\"approve-' + recording['id'] + '\" href=\"#\">Approve</td></tr>');
 
             
 
@@ -250,7 +274,6 @@ table {
               map: map,
               draggable: false
             });
-
             markers.push(marker);
             marker_ids.push(job['id']);
 
@@ -259,6 +282,9 @@ table {
             marker.shrt =  "<div class='mapInfo'><h1>" + job['title'] + "</h1><h2>" + job['about'] + "</h2>" +  "<br/><i><b>Click</b> on the <b>pin</b> for more information!</i><p><center><b></b></center><br /></div>";
 
             google.maps.event.addListener(marker, 'click', function () {
+              // Highlight the corresponding table row
+              $('.tablerow').removeClass('selected');
+              $('#tablerow-' + job['id']).addClass('selected');
               
               if(map.getZoom() < 9){
                 infowindow.close(map, this);
@@ -282,6 +308,10 @@ table {
               });
 
             google.maps.event.addListener(marker, 'mouseover', function () {
+              // Highlight the corresponding table row
+              $('.tablerow').removeClass('selected');
+              $('#tablerow-' + job['id']).addClass('selected');
+
               if(!openWindow){
                   infowindow.setContent(marker.shrt);
                   infowindow.open(marker.getMap(), this);
@@ -289,6 +319,9 @@ table {
             });
 
             google.maps.event.addListener(marker, 'mouseout', function () {
+              // Remove table row highlighting
+              $('.tablerow').removeClass('selected');
+
               if(!openWindow){
                   infowindow.close(marker.getMap(), this);
               }
@@ -299,8 +332,10 @@ table {
           }
 
           function getDataPoints(search){
-
-            var url = '/map/api/';
+            // ending 1 indicates to the api that we are moderating
+            // this causes the returned data points to be filtered
+            // by the user's organizational tags and the org_approved boolean
+            var url = '/map/api/1';
             if (typeof search != 'undefined'){
               url = url + search + '/';
               tag = search;

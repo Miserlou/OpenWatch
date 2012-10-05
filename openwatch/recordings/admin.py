@@ -24,7 +24,7 @@ class RecordingAdmin(admin.ModelAdmin):
     list_display = ('name', 'email', 'date', 'location', 'rec_file', 'org_approved')  # Allow sorting by these fields
     list_filter = ('date', 'org_approved')  # Allow filtering by these fields
     list_editable = ('org_approved',)  # Allow bulk changes to these fields
-
+    search_fields = ['name', 'public_description', 'private_description']
     def queryset(self, request):
         """ This method defines the queryset used by the admin app for this model
             Limit Recordings to those that belong to the requesting user's org.
