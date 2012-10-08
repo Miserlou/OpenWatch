@@ -67,6 +67,6 @@ class Command(BaseCommand):
                     # If not do_execute, only indicate recordings
                     if tag not in recording.tags:
                         modified_count += 1
-                        self.stdout.write('Recording %d (%s) %s with %s \n' % (recording.pk, recording.name, action, tag))
+                        self.write('Recording %d (%s) %s with %s \n' % (recording.pk, recording.name, action, tag))
 
         self.write('%d/%d Recordings %s \n' % (modified_count, total, action))
