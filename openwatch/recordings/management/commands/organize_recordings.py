@@ -2,6 +2,7 @@ from django.core.management.base import BaseCommand
 from optparse import make_option
 from recordings.models import Recording
 import re
+import sys
 
 import recording_tags
 
@@ -14,6 +15,18 @@ class Command(BaseCommand):
             help='save changes to database'),
     )
     help = 'Identify organizational Recordings by filename suffixes. Pass --execute to perform tagging.'
+
+    def write(self, string):
+        ''' A wrapper for self.stdout.write to avoid problems with unicode:
+            A bug in Python 2.6 results in self.stdout.write using
+            'default' unicode encoding, which can be ascii. This breaks
+            when the module encounters unicode characters.
+            Thus we've got to wrap the call :(
+            see http://stackoverflow.com/questions/8016236/python-unicode-handling-differences-between-print-and-sys-stdout-write
+        '''
+        if isinstance(string, unicode):
+            string = string.encode(sys.__stdout__.encoding)
+        sys.__stdout__.write(string)
 
     def handle(self, *args, **options):
         do_execute = options.get('execute')
@@ -35,7 +48,7 @@ class Command(BaseCommand):
                     # assume it has been processed properly
                     print recording.tags
                     if tag not in recording.tags:
-                        self.stdout.write('Recording %d (%s) %s with %s \n' % (recording.pk, recording.name, action, tag))
+                        self.write('Recording %d (%s) %s with %s \n' % (recording.pk, recording.name, action, tag))
                         recording.add_tag(tag)  # saves recording
                         modified_count += 1
                         # Check for Police Tape embedded email
@@ -56,5 +69,4 @@ class Command(BaseCommand):
                         modified_count += 1
                         self.stdout.write('Recording %d (%s) %s with %s \n' % (recording.pk, recording.name, action, tag))
 
-
-        self.stdout.write('%d/%d Recordings %s \n' % (modified_count, total, action))
+        self.write('%d/%d Recordings %s \n' % (modified_count, total, action))
