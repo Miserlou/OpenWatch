@@ -21,9 +21,9 @@ admin.site.register(User, UserProfileAdmin)
 
 class RecordingAdmin(admin.ModelAdmin):
     model = Recording
-    list_display = ('name', 'email', 'date', 'location', 'rec_file', 'org_approved')  # Allow sorting by these fields
-    list_filter = ('date', 'org_approved')  # Allow filtering by these fields
-    list_editable = ('org_approved',)  # Allow bulk changes to these fields
+    list_display = ('name', 'email', 'date', 'location', 'rec_file', 'org_approved', 'org_flagged')  # Allow sorting by these fields
+    list_filter = ('date', 'org_approved', 'org_flagged')  # Allow filtering by these fields
+    list_editable = ('org_approved', 'org_flagged')  # Allow bulk changes to these fields
     search_fields = ['name', 'public_description', 'private_description']
 
     def queryset(self, request):
@@ -34,10 +34,8 @@ class RecordingAdmin(admin.ModelAdmin):
 
         org_tag = request.user.get_profile().org_tag
         if org_tag != '':
-            # If the user belongs to an org:
             return qs.filter(tags__contains=org_tag)
         else:
-            # Return all Recordings
             return qs
 
         #print request.user.get_profile()

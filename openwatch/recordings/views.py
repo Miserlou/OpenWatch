@@ -126,10 +126,14 @@ def with_tag(request, tag, object_id=None, page=1):
 @login_required
 def approve(request, media_id):
     ''' Approve a recording at the top-level
+
         Once Approved, it will appear on OpenWatch.net
 
         To Approve, a user must have can_moderate true and
         have no organizational tags
+
+        Args:
+            media_id : a Recording pk
     '''
     org_tag = request.user.get_profile().org_tag
 
@@ -143,24 +147,45 @@ def approve(request, media_id):
 
 
 @login_required
-def org_approve(request, media_id):
-    ''' Approve a recording at the organizational level
+def org_moderate(request, media_id):
+    ''' Approve or Flag a recording at the organizational level
+
         Org approval should be considered by admins
         Before top-level approval for display on OpenWatch.net
         with organizational affiliation
 
+        Flagging should be considered by admins
+        in their decision to delete recordings of no significance
+        Flagged recordings will not appear in the organizations
+        map moderation panel
+
         To Approve, a user must have can_moderate true and
         an organizational tag matching a tag held by the Recording with pk=media_id
+        Or have .issup
+
+        Args:
+            media_id : a Recording pk
+            [POST] value: 1 = Approve, -1 = Flag
+
     '''
     org_tag = request.user.get_profile().org_tag
-
     recording = get_object_or_404(Recording, pk=media_id)
+    if 'value' not in request.POST:
+        raise Http404
 
-    if org_tag in recording.tags and request.user.get_profile().can_moderate:
+    value = int(request.POST.get('value', 0))
+    #print 'POST moderate value: ' + str(value)
+
+    if request.user.is_superuser or (org_tag in recording.tags and request.user.get_profile().can_moderate):
         recording = get_object_or_404(Recording, pk=media_id)
-        recording.org_approved = True
+        if value == 1:
+            recording.org_approved = True
+        elif value == -1:
+            recording.org_flagged = True
+        else:
+            return HttpResponse(json.dumps({'status': 'failure'}), mimetype="application/json")
+
         recording.save()
         return HttpResponse(json.dumps({'status': 'success'}), mimetype="application/json")
     else:
         return HttpResponse(json.dumps({'status': 'failure'}), mimetype="application/json")
-

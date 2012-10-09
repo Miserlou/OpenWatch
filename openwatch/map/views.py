@@ -94,7 +94,7 @@ def map_json(request, moderate=0):
         org_tag = request.user.get_profile().org_tag
         if org_tag != '':
             print 'Org tag: ' + org_tag
-            featureset = featureset.filter(org_approved=False, tags__contains=org_tag)
+            featureset = featureset.filter(org_approved=False, org_flagged=False, tags__contains=org_tag)
 
     #featureset = Recording.objects.filter(~Q(lat=None), ~Q(lon=None), ~Q(jtype='organic')).order_by('-date')[:1000]
     featureset = featureset.order_by('-date').filter(~Q(location='')).exclude(location__isnull=True).exclude(location__exact='')[:750]

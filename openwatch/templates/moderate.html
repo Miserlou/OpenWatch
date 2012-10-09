@@ -40,10 +40,10 @@ table {
 <script type="text/javascript" src="/static/markerclusterer_packed.js"></script>
 <div id="realmap" class="single_map" style="display:inline-block; width:50%; height:100%; float:left; margin: 0 auto; padding: 0; position: relative;"></div>
 <div id="recording-view" style="text-align:center; margin-left:auto; margin-right:auto; padding: 10px;">
-  <h1>Unapproved Recordings</h1>
-  <p><a href="/admin/recordings/recording/">Browse approved recordings</a> | <a href="#" onclick="resetMap()">Reset Map</a> </p>
+  <h1>New Recordings</h1>
+  <p><a href="/admin/recordings/recording/">Browse all recordings</a> | <a href="#" onclick="resetMap()">Reset Map</a> </p>
   <table id="recording-table">
-    <tr class="table-heading"><td>Title</td><td>Description</td><td>File</td><td>Location</td><td>Date</td><td>Approve</td></tr>
+    <tr class="table-heading"><td>Title</td><td>Description</td><td>File</td><td>Location</td><td>Date</td><td></td></tr>
   </table>
 </div>
           <script>
@@ -80,12 +80,30 @@ table {
             // id is in format 'approve-#'
             media_id = String($(this).attr('id').split('-')[1]);
             console.log("Org-approving " + media_id);
-            org_approve(media_id);
+            org_moderate(media_id, 1);
           });
 
-            function org_approve(media_id){
+          // Approving logic
+          // set up approve click listener
+          $('#recording-table').on('click', '.org-flag', function(e){
+            e.preventDefault();
+            // id is in format 'approve-#'
+            media_id = String($(this).attr('id').split('-')[1]);
+            console.log("Org-flagging " + media_id);
+            org_moderate(media_id, -1);
+          });
+
+            function org_moderate(media_id, value){
+            /*  Approves or Flags a recording
+
+                Args
+                  media_id: a Recording pk
+                  value: 1=Approve, -1=Flag
+
+            */
               $.ajax({
-                  url: "/org-approve/"+media_id,
+                  url: "/org-moderate/"+media_id,
+                  data: {'value': value},
                   success: function(data){
                     //console.log(data);
                     if(data.status === 'success'){
@@ -280,7 +298,7 @@ table {
             // Title | Desc | file | location
             */
             //$('#recording-table tr:last').after('<tr> <td>' + title + '</td> <td>' + description + ' </td></tr>');
-            $('#recording-table tr:last').after('<tr class=\"tablerow\" id=\"tablerow-' + recording['id'] + '\"> <td>' + recording['title'] + '</td> <td>' + recording['about'] + ' </td> <td><a href=\"{{MEDIA_URL}}' + recording['rec_file'] + '\">link</a></td> <td id=\"locationcol-' + recording['id'] + '\">' + recording['lat'] +', ' + recording['lon'] + ' </td><td>' + recording['date'] + ' <td><a class=\"org-approve\" id=\"approve-' + recording['id'] + '\" href=\"#\">Approve</td></tr>');
+            $('#recording-table tr:last').after('<tr class=\"tablerow\" id=\"tablerow-' + recording['id'] + '\"> <td>' + recording['title'] + '</td> <td>' + recording['about'] + ' </td> <td><a href=\"{{MEDIA_URL}}' + recording['rec_file'] + '\">link</a></td> <td id=\"locationcol-' + recording['id'] + '\">' + recording['lat'] +', ' + recording['lon'] + ' </td><td>' + recording['date'] + ' <td><a class=\"org-approve\" id=\"approve-' + recording['id'] + '\" href=\"#\"><img src=\"{{STATIC_URL}}check_color.png\"/></a> <a class=\"org-flag\" id=\"flag-' + recording['id'] + '\" href=\"#\"><img src=\"{{STATIC_URL}}x_color.png\"/></a> </td></tr>');
 
             
 

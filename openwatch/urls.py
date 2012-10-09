@@ -12,7 +12,7 @@ urlpatterns = patterns('',
      url(r'^victory$', 'openwatch.recordings.views.victory', name='victory'),
      # Ajax API:
      url(r'^approve/(?P<media_id>\d+)$', 'openwatch.recordings.views.approve', name='approve'),  # For top-level approval
-     url(r'^org-approve/(?P<media_id>\d+)$', 'openwatch.recordings.views.org_approve', name='org_approve'),  # For organizational approval
+     url(r'^org-moderate/(?P<media_id>\d+)$', 'openwatch.recordings.views.org_moderate', name='org_moderate'),  # For organizational approval
 
      (r'^all/', 'openwatch.recordings.views.listall'),
      (r'^about/', 'openwatch.recordings.views.about'),

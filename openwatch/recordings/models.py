@@ -49,6 +49,7 @@ class Recording(models.Model):
     # org_approved applies if tagged with an org tag
     # if tags contains a tag from recording_tags
     org_approved = models.BooleanField(default=False, blank=True)
+    org_flagged = models.BooleanField(default=False, blank=True)
     featured = models.BooleanField(default=False, blank=True)
     tags = TagField()
 
@@ -56,9 +57,13 @@ class Recording(models.Model):
     private_description = models.TextField(blank=True)
 
     def save(self):
+        if self.org_flagged == True and self.org_approved == True:
+            self.org_approved = False
+
         super(Recording, self).save()
 
         # New recording, let me know about it
+        # TODO: Re-enable before deploy
         #if not self.approved and int(self.rec_file.file.size) > 204800:
         #    send_mail('New recording: ' + self.name, 'Public: \n ' + self.public_description + 'Private: \n' + self.private_description + '\nSize:\n:' + str(self.rec_file.file.size) + '\nFile: ' + str(self.rec_file) + ' ' + str(self.file_loc) + "\nMIME: " + str(self.mimetype), 'openwatchnotifier@gmail.com', ['rich@anomos.info'], fail_silently=False)
 
