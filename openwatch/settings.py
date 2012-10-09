@@ -66,10 +66,11 @@ STATICFILES_DIRS = (
     "/Users/davidbrodsky/Documents/django/OpenWatch/static/",
 )
 
+# Deprecated setting
 # URL prefix for admin media -- CSS, JavaScript and images. Make sure to use a
 # trailing slash.
 # Examples: "http://foo.com/media/", "/media/".
-ADMIN_MEDIA_PREFIX = '/media/'
+#ADMIN_MEDIA_PREFIX = '/media/'
 
 # Make this unique, and don't share it with anybody.
 SECRET_KEY = '2f=jo^b+x)xu92a93wt3+d9drnzvp%=e&3um6ltw%o03cwn3v$'

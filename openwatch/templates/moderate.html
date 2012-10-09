@@ -152,6 +152,9 @@ table {
           // Dict of recording id -> index in markers of corresponding marker
           var id_to_marker_map = {};
 
+          // Map Center if none provided
+          var default_center = new google.maps.LatLng(parseFloat(40.850891), parseFloat(-96.759121));
+
           var mcOptions;
           var markerCluster = new MarkerClusterer(map, markers);
           var tag = '';
@@ -424,7 +427,7 @@ table {
               map.setZoom(9);
               getDataPoints();
           {% else %}
-                displayMap(40.850891,-96.759121);
+                displayMap(default_center.lat(),default_center.lng());
                 getDataPoints();
                 map.setZoom(5);
           {% endif %}
@@ -455,10 +458,14 @@ table {
 
         // Restores map to original centering and zoom level
         function resetMap(){
+          {% if location %}
           var visitorLocation = new google.maps.LatLng(parseFloat({{location.lat}}), parseFloat({{location.lon}}));
               bounds = [{{location.lat|add:1}}, {{location.lon|add:1}}, {{location.lat|add:-1}}, {{location.lon|add:-1}}];
               displayMap({{location.lat}},{{location.lon}});
               map.setCenter(visitorLocation);
+          {% else %}
+              map.setCenter(default_center);
+          {% endif %}
               map.setZoom(9);
 
         }
