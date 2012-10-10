@@ -58,12 +58,6 @@ table {
             // Highlight this table row
             $('.tablerow').removeClass('selected');
             $(this).addClass('selected');
-
-            // id is in format 'tablerow-#'
-            media_id = String($(this).attr('id').split('-')[1]);
-            // Center and Zoom map to corresponding marker
-            centerMapWithOffset(map, markers[id_to_marker_map[media_id]]);
-            map.setZoom(12);
           });
 
           // Activate marker click event when corresponding table row clicked
@@ -354,9 +348,6 @@ table {
               });
 
             google.maps.event.addListener(marker, 'mouseover', function () {
-              // Highlight the corresponding table row
-              $('.tablerow').removeClass('selected');
-              $('#tablerow-' + job['id']).addClass('selected');
 
               if(!openWindow){
                   infowindow.setContent(marker.shrt);
