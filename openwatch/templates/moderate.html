@@ -328,7 +328,7 @@ table {
               $('#tablerow-' + job['id']).addClass('selected');
               $('#scroll-container').animate({
                 scrollTop: $('#tablerow-' + job['id']).offset().top
-              }, 2000);
+              }, 500);
 
               if(map.getZoom() < 9){
                 infowindow.close(map, this);
