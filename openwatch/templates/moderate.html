@@ -53,13 +53,6 @@ table {
           var csrftoken = getCookie('csrftoken');
           setupAjax();
 
-          // Center map on marker when hovering over corresponding list row
-          $('#recording-table').on('hover', '.tablerow', function(e){
-            // Highlight this table row
-            $('.tablerow').removeClass('selected');
-            $(this).addClass('selected');
-          });
-
           // Activate marker click event when corresponding table row clicked
           $('#recording-table').on('click', '.tablerow', function(e){
             // id is in format 'tablerow-#'
@@ -326,8 +319,11 @@ table {
               // Highlight the corresponding table row
               $('.tablerow').removeClass('selected');
               $('#tablerow-' + job['id']).addClass('selected');
+
+              console.log($('#tablerow-' + job['id']).offset().top);
+
               $('#scroll-container').animate({
-                scrollTop: $('#tablerow-' + job['id']).offset().top
+                scrollTop: $('#tablerow-' + job['id']).offset().top - $('#scroll-container').offset().top + $('#scroll-container').scrollTop()
               }, 500);
 
               if(map.getZoom() < 9){
