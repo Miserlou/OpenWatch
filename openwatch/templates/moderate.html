@@ -78,6 +78,9 @@ table {
       <tr class="table-heading"><td>Title</td><td>Description</td><td>File</td><td>Location</td><td>Date</td><td></td></tr>
     </table>
     </div>
+    <div id="table-loading" style="width:100%; height:100%; display:none;">
+      <h1>Loading...</h1>
+    </div>
   </div>
   <img style="display:inline-block; position:absolute; z:10; top:2%; right:2%; width:120px"src="/static/logo.png"/>
           <script>
@@ -453,14 +456,20 @@ table {
                   $('#showing').html("Showing " + markers.length + " " + tag + " recordings." + sm);
                 }
 
-                $('#loading').hide();
+                //$('#loading').hide();
+                $('#table-loading').fadeOut('slow', function(){
+                  $('#scroll-container').fadeIn('slow');
+                });
+                
+                
             });
           }
       </script>
       <script>
         //onload
         jQuery(function($){
-
+          $('#scroll-container').hide();
+          $('#table-loading').fadeIn('slow');
           {% if location %}
               var visitorLocation = new google.maps.LatLng(parseFloat({{location.lat}}), parseFloat({{location.lon}}));
               bounds = [{{location.lat|add:1}}, {{location.lon|add:1}}, {{location.lat|add:-1}}, {{location.lon|add:-1}}];
