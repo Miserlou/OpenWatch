@@ -75,7 +75,7 @@ table {
     <p><a href="/admin/recordings/recording/">Browse all recordings</a> | <a href="#" onclick="resetMap()">Reset Map</a> </p>
     <div id="scroll-container" style="width:100%; height:100%; overflow:scroll;">
     <table id="recording-table">
-      <tr class="table-heading"><td>Title</td><td>Description</td><td>File</td><td>Location</td><td>Date</td><td></td></tr>
+      <tr class="table-heading" style="display:none;"><td>Title</td><td>Description</td><td>File</td><td>Location</td><td>Date</td><td></td></tr>
     </table>
     </div>
     <div id="table-loading" style="width:100%; height:100%; display:none;">
@@ -458,7 +458,9 @@ table {
 
                 //$('#loading').hide();
                 $('#table-loading').fadeOut('slow', function(){
+                  $('.table-heading').fadeIn('slow');
                   $('#scroll-container').fadeIn('slow');
+
                 });
                 
                 
