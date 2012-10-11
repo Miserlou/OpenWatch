@@ -14,8 +14,31 @@
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
 <script src="/static/jquery.fittext.js"></script>
 <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
-<link href="/static/style11.css" rel="stylesheet" type="text/css" media="screen" />
+<!--<link href="/static/bootstrap.min.css" rel="stylesheet" type="text/css" media="screen" /> -->
 <style>
+
+.table-striped tbody tr:nth-child(odd) td,
+.table-striped tbody tr:nth-child(odd) th {
+  background-color: #f9f9f9;
+}
+
+body {
+  margin: 0;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 14px;
+  line-height: 20px;
+  color: #333333;
+  background-color: #DBDBDB;
+}
+a {
+  color: #0088cc;
+  text-decoration: none;
+}
+a:hover {
+  color: #005580;
+  text-decoration: underline;
+}
+
 td{
   padding:5px;
 }
@@ -27,9 +50,17 @@ td{
 table {
   table-layout : fixed;
   text-align:center;
+  border-spacing: 0;
 }
 .selected{
-  background-color:#F0D9BE;
+  background-color:#EDEDED;
+}
+
+.mapAbout{
+  pointer-events:none;
+  position: relative;
+  z-index: 10;
+
 }
 </style>
 </head>
@@ -38,10 +69,9 @@ table {
 <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
 <script type="text/javascript" src="http://www.google.com/jsapi?key=ABQIAAAAp04yNttlQq-7b4aZI_jL5hQYPm-xtd00hTQOC0OXpAMO40FHAxQMnH50uBbWoKVHwgpklyirDEregg"></script>
 <script type="text/javascript" src="/static/markerclusterer_packed.js"></script>
-
   <div id="realmap" class="single_map" style="display:inline-block; width:30%; height:100%; margin: 0 auto; padding: 0;"></div>
   <div id="recording-view" style="display:inline-block; width:67%; height:100%; text-align:center; margin-left:auto; margin-right:auto; padding: 10px; vertical-align:top;">
-    <h1>New Recordings</h1>
+    <h2 style="display:inline-block;margin-bottom:0px;">New Recordings</h2>
     <p><a href="/admin/recordings/recording/">Browse all recordings</a> | <a href="#" onclick="resetMap()">Reset Map</a> </p>
     <div id="scroll-container" style="width:100%; height:100%; overflow:scroll;">
     <table id="recording-table">
@@ -49,6 +79,7 @@ table {
     </table>
     </div>
   </div>
+  <img style="display:inline-block; position:absolute; z:10; top:2%; right:2%; width:120px"src="/static/logo.png"/>
           <script>
           var csrftoken = getCookie('csrftoken');
           setupAjax();
