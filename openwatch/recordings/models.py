@@ -81,7 +81,7 @@ class Recording(models.Model):
             lon = 0.0
 
         # Date conversion
-        return {'id': self.pk, 'rec_file': str(self.rec_file), 'title': self.name, 'tags': self.tags, 'url': 'http://openwatch.net/view/' + str(self.pk), 'about': self.public_description, 'lat': lat, 'lon': lon, 'location': self.location, 'date': self.date.strftime("%s %s" % (DATE_FORMAT, TIME_FORMAT))}
+        return {'id': self.pk, 'email': self.email, 'rec_file': str(self.rec_file), 'title': self.name, 'tags': self.tags, 'url': 'http://openwatch.net/view/' + str(self.pk), 'about': self.public_description, 'lat': lat, 'lon': lon, 'location': self.location, 'date': self.date.strftime("%s %s" % (DATE_FORMAT, TIME_FORMAT))}
 
     def get_tags(self):
         return Tag.objects.get_for_object(self)

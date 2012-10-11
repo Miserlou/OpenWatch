@@ -346,7 +346,12 @@ table {
             id_to_marker_map[job['id']] = markers.indexOf(marker);
 
             marker.str =
-              "<div class='mapInfo'><h1>" + job['title'] + "</h1><p><h2>" + job['about'] + "</h2>" + "<p><audio id='audio1' controls><source src = '/" + job['rec_file'] + "'></audio><br /><br /><p><a href='/" + job['rec_file'] + "'>Download file!</a><p><i>..or..</i><p><a href='/view/" + job['id'] +"' target='_blank'>View recording</a>.<p>Location: <i>" + job['location'] +"</i></div>";
+              "<div class='mapInfo'><h1>" + job['title'] + "</h1><p><h2>" + job['about'] + "</h2>" + "<p><audio id='audio1' controls><source src = '/" + job['rec_file'] + "'></audio><br /><br /><p><a href='/" + job['rec_file'] + "'>Download file!</a><p><i>..or..</i><p><a href='/view/" + job['id'] +"' target='_blank'>View recording</a>.<p>Location: <i>" + job['location'] +"</i>";
+
+            if(job['email'] != ""){
+              marker.str += "<p><a href=\"mailto:" + job['email']+"\">Email Submitter</a></p>";
+            }
+            marker.str += "</div>";
             marker.shrt =  "<div class='mapInfo'><h1>" + job['title'] + "</h1><h2>" + job['about'] + "</h2>" +  "<br/><i><b>Click</b> on the <b>pin</b> for more information!</i><p><center><b></b></center><br /></div>";
 
             google.maps.event.addListener(marker, 'click', function () {
