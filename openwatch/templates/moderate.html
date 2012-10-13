@@ -107,9 +107,8 @@ audio {
           $('#recording-table').on('click', '.audioplayer-link', function(e){
             e.preventDefault();
             console.log('play audio');
-            $(this).parent().hide();
-            media_id = String($(this).closest('.tablerow').attr('id').split('-')[1]);
-            $('#audioplayer-' + media_id).show();
+            $(this).parent().html('<audio controls><source src = \"/' + $(this).attr('audio-src') + '\"></audio>');
+
             
           });
 
@@ -348,7 +347,7 @@ audio {
             // Title | Desc | file | location
             */
             //$('#recording-table tr:last').after('<tr> <td>' + title + '</td> <td>' + description + ' </td></tr>');
-            $('#recording-table tr:last').after('<tr class=\"tablerow\" id=\"tablerow-' + recording['id'] + '\"> <td>' + recording['title'] + '</td> <td>' + recording['about'] + ' </td> <td><a href=\"/' + recording['rec_file'] + '\">download</a></td> <td class=\"location\" id=\"locationcol-' + recording['id'] + '\">' +  recording['lat'] +', ' + recording['lon'] + ' </td> <td class=\"audioplayer\" id=\"audioplayer-' + recording['id'] + '\"><audio controls><source src = \"/' + recording['rec_file'] + '\"></audio></td><td style=\"width:200px\"><a class=\"audioplayer-link\" href=\"#\">Play</a></td><td>' + recording['date'] + ' <td><a class=\"org-approve\" id=\"approve-' + recording['id'] + '\" href=\"#\"><img src=\"{{STATIC_URL}}check_color.png\"/></a> <a class=\"org-flag\" id=\"flag-' + recording['id'] + '\" href=\"#\"><img src=\"{{STATIC_URL}}x_color.png\"/></a> </td></tr>');
+            $('#recording-table tr:last').after('<tr class=\"tablerow\" id=\"tablerow-' + recording['id'] + '\"> <td>' + recording['title'] + '</td> <td>' + recording['about'] + ' </td> <td><a href=\"/' + recording['rec_file'] + '\">download</a></td> <td class=\"location\" id=\"locationcol-' + recording['id'] + '\">' +  recording['lat'] +', ' + recording['lon'] + ' </td> <td style=\"width:200px\"><a class=\"audioplayer-link\" audio-src=\"'+ recording['rec_file'] + '\" href=\"#\">Play</a></td><td>' + recording['date'] + ' <td><a class=\"org-approve\" id=\"approve-' + recording['id'] + '\" href=\"#\"><img src=\"{{STATIC_URL}}check_color.png\"/></a> <a class=\"org-flag\" id=\"flag-' + recording['id'] + '\" href=\"#\"><img src=\"{{STATIC_URL}}x_color.png\"/></a> </td></tr>');
 
             
 
