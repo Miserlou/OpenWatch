@@ -322,7 +322,7 @@ table {
             // Title | Desc | file | location
             */
             //$('#recording-table tr:last').after('<tr> <td>' + title + '</td> <td>' + description + ' </td></tr>');
-            $('#recording-table tr:last').after('<tr class=\"tablerow\" id=\"tablerow-' + recording['id'] + '\"> <td>' + recording['title'] + '</td> <td>' + recording['about'] + ' </td> <td><a href=\"/' + recording['rec_file'] + '\">link</a></td> <td id=\"locationcol-' + recording['id'] + '\">' + recording['lat'] +', ' + recording['lon'] + ' </td><td>' + recording['date'] + ' <td><a class=\"org-approve\" id=\"approve-' + recording['id'] + '\" href=\"#\"><img src=\"{{STATIC_URL}}check_color.png\"/></a> <a class=\"org-flag\" id=\"flag-' + recording['id'] + '\" href=\"#\"><img src=\"{{STATIC_URL}}x_color.png\"/></a> </td></tr>');
+            $('#recording-table tr:last').after('<tr class=\"tablerow\" id=\"tablerow-' + recording['id'] + '\"> <td>' + recording['title'] + '</td> <td>' + recording['about'] + ' </td> <td><a href=\"/' + recording['rec_file'] + '\">link</a></td> <td class=\"location\" id=\"locationcol-' + recording['id'] + '\">' +  recording['lat'] +', ' + recording['lon'] + ' </td> <td><audio controls><source src = \"/' + recording['rec_file'] + '\"></audio></td><td>' + recording['date'] + ' <td><a class=\"org-approve\" id=\"approve-' + recording['id'] + '\" href=\"#\"><img src=\"{{STATIC_URL}}check_color.png\"/></a> <a class=\"org-flag\" id=\"flag-' + recording['id'] + '\" href=\"#\"><img src=\"{{STATIC_URL}}x_color.png\"/></a> </td></tr>');
 
             
 
@@ -346,7 +346,7 @@ table {
             id_to_marker_map[job['id']] = markers.indexOf(marker);
 
             marker.str =
-              "<div class='mapInfo'><h1>" + job['title'] + "</h1><p><h2>" + job['about'] + "</h2>" + "<p><audio id='audio1' controls><source src = '/" + job['rec_file'] + "'></audio><br /><br /><p><a href='/" + job['rec_file'] + "'>Download file!</a><p><i>..or..</i><p><a href='/view/" + job['id'] +"' target='_blank'>View recording</a>.<p>Location: <i>" + job['location'] +"</i>";
+              "<div class='mapInfo'><h1>" + job['title'] + "</h1><p><h2>" + job['about'] + "</h2>" + "<br /><br /><p><a href='/" + job['rec_file'] + "'>Download file!</a><p><i>..or..</i><p><a href='/view/" + job['id'] +"' target='_blank'>View recording</a>.<p>Location: <i>" + job['location'] +"</i>";
 
             if(job['email'] != "" && job['email'] != undefined){
               marker.str += "<p><a href=\"mailto:" + job['email']+"\">Email Submitter</a></p>";
