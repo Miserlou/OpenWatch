@@ -371,7 +371,7 @@ audio {
             id_to_marker_map[job['id']] = markers.indexOf(marker);
 
             marker.str =
-              "<div class='mapInfo'><h1>" + job['title'] + "</h1><p><h2>" + job['about'] + "</h2>" + "<br /><br /><p><a href='/" + job['rec_file'] + "'>Download file!</a><p><i>..or..</i><p><a href='/view/" + job['id'] +"' target='_blank'>View recording</a>.<p>Location: <i>" + job['location'] +"</i>";
+              "<div class='mapInfo'><h1>" + job['title'] + "</h1><p><h2>" + job['about'] + "</h2>" + "<p><a href='/" + job['rec_file'] + "'>Download file!</a><p><i>..or..</i><p><a href='/view/" + job['id'] +"' target='_blank'>View recording</a>.<p>Location: <i>" + job['location'] +"</i>";
 
             if(job['email'] != "" && job['email'] != undefined){
               marker.str += "<p><a href=\"mailto:" + job['email']+"\">Email Submitter</a></p>";
