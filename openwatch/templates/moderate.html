@@ -437,7 +437,7 @@ audio {
             // ending 1 indicates to the api that we are moderating
             // this causes the returned data points to be filtered
             // by the user's organizational tags and the org_approved boolean
-            var url = '/map/api/1';
+            var url = '/map/api/moderate';
             if (typeof search != 'undefined'){
               url = url + search + '/';
               tag = search;

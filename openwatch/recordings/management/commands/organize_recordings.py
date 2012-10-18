@@ -46,7 +46,7 @@ class Command(BaseCommand):
                 if do_execute:
                     # If this recording is all ready tagged to an organization,
                     # assume it has been processed properly
-                    print recording.tags
+                    #print recording.tags
                     if tag not in recording.tags:
                         self.write('Recording %d (%s) %s with %s \n' % (recording.pk, recording.name, action, tag))
                         recording.add_tag(tag)  # saves recording

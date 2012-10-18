@@ -49,7 +49,7 @@ AUTH_PROFILE_MODULE = 'recordings.UserProfile'
 # Absolute path to the directory that holds media.
 # Example: "/home/media/media.lawrence.com/"
 #MEDIA_ROOT = '/home/tuttle/Projects/openwatch/openwatch/static/'
-MEDIA_ROOT = '/Users/davidbrodsky/Documents/django/OpenWatch/static/'
+#MEDIA_ROOT = '/Users/davidbrodsky/Documents/django/OpenWatch/static/'
 
 # URL that handles the media served from MEDIA_ROOT. Make sure to use a
 # trailing slash if there is a path component (optional in other cases).

@@ -1,5 +1,6 @@
 import json
 from django.http import HttpResponseRedirect, HttpResponseNotFound
+from django.http import Http404
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404, render_to_response, Http404, HttpResponse
 from datetime import datetime
@@ -40,7 +41,8 @@ def upload(request):
             form.save()
             return HttpResponseRedirect('/victory') # Redirect after POST
         else:
-            print "Shiiiiit"
+            pass
+            #print "Shiiiiit"
     else:
         form = RecordingForm() # An unbound form
 
@@ -57,10 +59,10 @@ def upload_no_captcha(request):
         recording = Recording()
         # Check if recording submitted by ACLU-NJ Police Tape 
         # These recording filenames are of form XXXX_aclunj.XXX
-        print 'checking ' + str(request.FILES['rec_file'].name)
+        #print 'checking ' + str(request.FILES['rec_file'].name)
         tag = recording_tags.ACLU_NJ
         if "_aclunj." in str(request.FILES['rec_file'].name):
-            print str(request.FILES['rec_file'].name) + ' will be tagged with ' + tag
+            #print str(request.FILES['rec_file'].name) + ' will be tagged with ' + tag
             recording.add_tag(tag)
             # Police Tape appends email to existing privDesc:
             # privDesc = privDesc + "[" + email + "]";
@@ -87,7 +89,7 @@ def upload_no_captcha(request):
     return render_to_response('upload_nocaptcha.html', {
         'form': form,
         'featured': list(featureset)[0:5],
-        'cat': 'upload' 
+        'cat': 'upload'
     })
 
 def victory(request):
@@ -100,11 +102,11 @@ def listall(request):
 
 def view(request, media_id):
     recording = get_object_or_404(Recording, pk=media_id)
-    queryset = Recording.objects.filter(approved=True).all().order_by('-date')
+    #queryset = Recording.objects.filter(approved=True).all().order_by('-date')
     featureset = Recording.objects.filter(featured=True).all().order_by('-date')
     #print request.user.get_profile().can_moderate
-    #if not recording.approved:
-    #   return HttpResponseNotFound('<h1>No Page Here</h1>')
+    if not recording.approved and not request.user.is_superuser:
+        raise Http404
     return render_to_response('view.html', {'recording': recording, 'featured': list(featureset)[0:5], 'cat': 'media'})
 
 def tags(request):
@@ -129,15 +131,13 @@ def approve(request, media_id):
 
         Once Approved, it will appear on OpenWatch.net
 
-        To Approve, a user must have can_moderate true and
-        have no organizational tags
+        To Approve, user.is_superuser == True
 
         Args:
             media_id : a Recording pk
     '''
-    org_tag = request.user.get_profile().org_tag
 
-    if request.user.get_profile().can_moderate and org_tag == '':
+    if request.user.is_superuser:
         recording = get_object_or_404(Recording, pk=media_id)
         recording.approved = True
         recording.save()
