@@ -57,13 +57,13 @@ AUTH_PROFILE_MODULE = 'recordings.UserProfile'
 MEDIA_URL = 'http://openwatch.net/static/'
 
 #UPLOAD_ROOT = '/var/www/openwatch/uploads/'
-UPLOAD_ROOT = 'Users/davidbrodsky/Documents/django/OpenWatch_static/uploads'
+#UPLOAD_ROOT = 'Users/davidbrodsky/Documents/django/OpenWatch_static/uploads'
 
 STATIC_URL = '/static/'
-STATIC_ROOT = '/Users/davidbrodsky/Documents/django/OpenWatch_static'
+#STATIC_ROOT = '/Users/davidbrodsky/Documents/django/OpenWatch_static'
 
 STATICFILES_DIRS = (
-    "/Users/davidbrodsky/Documents/django/OpenWatch/static/",
+    os.path.join(os.path.dirname(__file__), '../static/'),
 )
 
 # Deprecated setting
