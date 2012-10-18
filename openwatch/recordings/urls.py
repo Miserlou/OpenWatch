@@ -10,9 +10,10 @@ urlpatterns = patterns('',
 	  # These are all ready specified in the project urls.py
       #url(r'^upload$', 'openwatch.recordings.views.upload', name='upload'),
       #url(r'^uploadnocaptcha$', 'openwatch.recordings.views.upload_no_captcha', name='upload_no_captcha'),
-      
+
       #url(r'^victory$', 'openwatch.recordings.views.victory', name='victory'),
 
       # Ajax API:
       #url(r'^approve$', 'openwatch.recordings.views.approve', name='approve'),
+
 )
