@@ -1,5 +1,5 @@
 from django.conf.urls.defaults import *
-from openwatch.recordings.models import Recording 
+from openwatch.recordings.models import Recording
 
 info_dict = {
   'queryset': Recording.objects.all(),
