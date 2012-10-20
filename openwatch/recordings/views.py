@@ -11,8 +11,8 @@ from openwatch.recordings.models import Recording, RecordingForm, RecordingNoCap
 
 def root(request):
 
-    featureset = Recording.objects.filter(featured=True).all().order_by('-date')
-    return render_to_response('home.html', {'featured': list(featureset)[0:5], 'cat': 'main' })
+    #featureset = Recording.objects.filter(featured=True).all().order_by('-date')
+    return render_to_response('coming_soon.html')
 
 def about(request):
     featureset = Recording.objects.filter(featured=True).all().order_by('-date')
