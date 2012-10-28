@@ -1,0 +1,11 @@
+ALTER TABLE recordings_recording ADD email varchar(254) NOT NULL;
+ALTER TABLE recordings_recording ADD org_flagged" boolean NOT NULL;
+ALTER TABLE recordings_recording ADD org_flagged" boolean NOT NULL;
+
+CREATE TABLE "recordings_userprofile" (
+    "id" serial NOT NULL PRIMARY KEY,
+    "user_id" integer NOT NULL UNIQUE REFERENCES "auth_user" ("id") DEFERRABLE INITIALLY DEFERRED,
+    "can_moderate" boolean NOT NULL,
+    "org_tag" varchar(255) NOT NULL
+)
+;
