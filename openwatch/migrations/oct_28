@@ -1,6 +1,6 @@
 ALTER TABLE recordings_recording ADD email varchar(254);
-ALTER TABLE recordings_recording ADD org_flagged boolean default f;
-ALTER TABLE recordings_recording ADD org_flagged boolean default f;
+ALTER TABLE recordings_recording ADD org_flagged boolean default 'f';
+ALTER TABLE recordings_recording ADD org_approved boolean default 'f';
 
 CREATE TABLE "recordings_userprofile" (
     "id" serial NOT NULL PRIMARY KEY,
