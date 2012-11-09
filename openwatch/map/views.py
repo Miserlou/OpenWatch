@@ -86,7 +86,7 @@ def redir(self):
 
 #     return render_to_response('map.html', {'jobs': featureset, 'numcareers': len(featureset), 'tag': tag}, context_instance=RequestContext(request))
 
-def map_json(request, moderate=0):
+def map_json(request):
     #featureset = Recording.objects.filter(~Q(lat=None), ~Q(lon=None), ~Q(jtype='organic')).order_by('-date')[:1000]
     featureset = Recording.objects.all().order_by('-date').filter(~Q(location='')).exclude(location__isnull=True).exclude(location__exact='')[:750]
     resp = encode_queryset(featureset)
