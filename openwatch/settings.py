@@ -50,6 +50,8 @@ AUTH_PROFILE_MODULE = 'recordings.UserProfile'
 # Example: "/home/media/media.lawrence.com/"
 MEDIA_ROOT = '/home/tuttle/Projects/openwatch/openwatch/static/'
 
+UPLOAD_ROOT = '/var/www/openwatch/uploads/'
+
 
 # URL that handles the media served from MEDIA_ROOT. Make sure to use a
 # trailing slash if there is a path component (optional in other cases).
