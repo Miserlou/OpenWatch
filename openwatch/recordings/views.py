@@ -3,6 +3,7 @@ from django.http import HttpResponseRedirect, HttpResponseNotFound
 from django.http import Http404
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404, render_to_response, Http404, HttpResponse
+from recordings.utils import validate_email
 from datetime import datetime
 from tagging.models import Tag, TaggedItem
 from django.views.decorators.csrf import csrf_exempt
@@ -53,23 +54,28 @@ def upload(request):
         'cat': 'upload' 
     })
 
+
 @csrf_exempt
 def upload_no_captcha(request):
-    if request.method == 'POST': # If the form has been submitted...
+    if request.method == 'POST':  # If the form has been submitted...
         recording = Recording()
         # Check if recording submitted by ACLU-NJ Police Tape 
         # These recording filenames are of form XXXX_aclunj.XXX
         #print 'checking ' + str(request.FILES['rec_file'].name)
+
         tag = recording_tags.ACLU_NJ
         if "_aclunj." in str(request.FILES['rec_file'].name):
             #print str(request.FILES['rec_file'].name) + ' will be tagged with ' + tag
             recording.add_tag(tag)
             # Police Tape appends email to existing privDesc:
             # privDesc = privDesc + "[" + email + "]";
-            try:
-                recording.email = request.POST.get('private_description', '').rsplit("[", 1)[1].rsplit("]", 1)[0]
+
+            #recording.email = request.POST.get('private_description', '').rsplit("[", 1)[1].rsplit("]", 1)[0]
+            potential_email = request.POST.get('private_description', '').rsplit("[", 1)[1].rsplit("]", 1)[0]
+            if validate_email(potential_email):
+                recording.email = potential_email
                 recording.private_description = request.POST.get('private_description', 'No description available').rsplit("[", 1)[0]
-            except:
+            else:
                 recording.private_description = request.POST.get('private_description', 'No description available')
         else:
             recording.private_description = request.POST.get('private_description', 'No description available')

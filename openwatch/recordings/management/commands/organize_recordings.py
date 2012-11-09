@@ -1,6 +1,7 @@
 from django.core.management.base import BaseCommand
 from optparse import make_option
 from recordings.models import Recording
+from recordings.utils import validate_email
 import re
 import sys
 
@@ -43,26 +44,31 @@ class Command(BaseCommand):
         for recording in Recording.objects.all():
             #print 'checking ' + str(recording.rec_file)
             if "_aclunj" in str(recording.rec_file):
+                do_save = False
                 if do_execute:
                     # If this recording is all ready tagged to an organization,
                     # assume it has been processed properly
                     #print recording.tags
                     if tag not in recording.tags:
                         self.write('Recording %d (%s) %s with %s \n' % (recording.pk, recording.name, action, tag))
-                        recording.add_tag(tag)  # saves recording
+                        recording.add_tag(tag)
+                        do_save = True
                         modified_count += 1
                         # Check for Police Tape embedded email
                         # Police Tape appends email to existing privDesc:
                         # privDesc = privDesc + "[" + email + "]";
                         try:
                             potential_email = recording.private_description.rsplit("[", 1)[1].rsplit("]", 1)[0]
-                            if re.match(r"^[A-Za-z0-9\.\+_-]+@[A-Za-z0-9\._-]+\.[a-zA-Z]*$", potential_email):
+                            #if re.match(r"^[A-Za-z0-9\.\+_-]+@[A-Za-z0-9\._-]+\.[a-zA-Z]*$", potential_email):
+                            if validate_email(potential_email):
                                 recording.email = potential_email
                             recording.private_description = recording.private_description.rsplit("[", 1)[0]
-                            recording.save()
+                            do_save = True
                         except:
                             # If we couldn't parse the email from private description, assume it didn't exist
                             pass
+                    if do_save:
+                        recording.save()
                 else:
                     # If not do_execute, only indicate recordings
                     if tag not in recording.tags:

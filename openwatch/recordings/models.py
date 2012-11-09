@@ -66,7 +66,7 @@ class Recording(models.Model):
 
         # New recording, let me know about it
         if not self.approved and int(self.rec_file.file.size) > 204800:
-            send_mail('New recording: ' + self.name, 'Public: \n ' + self.public_description + 'Private: \n' + self.private_description + '\nSize:\n:' + str(self.rec_file.file.size) + '\nFile: ' + str(self.rec_file) + ' ' + str(self.file_loc) + "\nMIME: " + str(self.mimetype), 'openwatchnotifier@gmail.com', ['rich@anomos.info'], fail_silently=False)
+            send_mail('New recording: ' + self.name, 'Public: \n ' + self.public_description + 'Private: \n' + self.private_description + '\nSize:\n:' + str(self.rec_file.file.size) + '\nFile: ' + str(self.rec_file) + ' ' + str(self.file_loc) + "\nMIME: " + str(self.mimetype), 'openwatchnotifier@gmail.com', ['rich@anomos.info'], fail_silently=True)
 
         #XXX: Move the shit to static if approved!
         if len(self.vimeo) == 0 and self.approved and "video" in self.mimetype:
@@ -92,7 +92,7 @@ class Recording(models.Model):
             self.tags = tag
         else:
             self.tags = self.tags + ', ' + tag
-        self.save()
+        #self.save()
 
     def __unicode__(self):
         return self.name + ': ' + self.public_description 
