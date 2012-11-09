@@ -1,2 +1,7 @@
 *.pyc
 *.swp
+<<<<<<< HEAD
+=======
+test_db
+local_settings.py
+>>>>>>> 80290992e03b132144e0bb7b2ad87c3b1ea52896

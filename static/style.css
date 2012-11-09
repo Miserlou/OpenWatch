@@ -406,3 +406,42 @@ a:hover {
 #footer a {
 	color: red;
 }
+
+.approved{
+	padding:5px;
+	background:#069C1D;
+	color:#FFFFFF;
+	font-weight: bold;
+	font-size: 20px;
+	text-align:center;
+	//background-image: url("/static/greenstripe.png");
+}
+
+.not-approved{
+	padding:5px;
+	background:#EB1D1D;
+	color:#FFFFFF;
+	font-weight: bold;
+	font-size: 20px;
+	text-align:center;
+	//background-image: url("/static/redstripe.png");
+}
+
+.explain-approval{
+	color:#FFFFFF;
+	font-size:15px;
+}
+
+.recording-moderation-panel{
+	text-align:center;
+}
+
+.approve-button{
+	font-weight: bold;
+	font-size: 20px;
+	padding:10px;
+}
+
+.shadow{
+	text-shadow: #000000 0px 2px 2px;
+}
