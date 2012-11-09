@@ -1,3 +1,4 @@
 *.pyc
 *.swp
 test_db
+local_settings.py
