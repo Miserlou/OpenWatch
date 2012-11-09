@@ -48,21 +48,14 @@ AUTH_PROFILE_MODULE = 'recordings.UserProfile'
 
 # Absolute path to the directory that holds media.
 # Example: "/home/media/media.lawrence.com/"
-<<<<<<< HEAD:openwatch/settings.py
 MEDIA_ROOT = '/home/tuttle/Projects/openwatch/openwatch/static/'
-=======
-#MEDIA_ROOT = '/home/tuttle/Projects/openwatch/openwatch/static/'
-#MEDIA_ROOT = '/Users/davidbrodsky/Documents/django/OpenWatch/static/'
->>>>>>> 80290992e03b132144e0bb7b2ad87c3b1ea52896:openwatch/settings.py
+
 
 # URL that handles the media served from MEDIA_ROOT. Make sure to use a
 # trailing slash if there is a path component (optional in other cases).
 # Examples: "http://media.lawrence.com", "http://example.com/media/"
 MEDIA_URL = 'http://openwatch.net/static/'
 
-<<<<<<< HEAD:openwatch/settings.py
-UPLOAD_ROOT = '/var/www/openwatch/uploads/'
-=======
 #UPLOAD_ROOT = '/var/www/openwatch/uploads/'
 #UPLOAD_ROOT = 'Users/davidbrodsky/Documents/django/OpenWatch_static/uploads'
 
@@ -72,7 +65,6 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = (
     os.path.join(os.path.dirname(__file__), '../static/'),
 )
->>>>>>> 80290992e03b132144e0bb7b2ad87c3b1ea52896:openwatch/settings.py
 
 # Deprecated setting
 # URL prefix for admin media -- CSS, JavaScript and images. Make sure to use a
