@@ -349,7 +349,7 @@ audio {
             // Title | Desc | file | location
             */
             //$('#recording-table tr:last').after('<tr> <td>' + title + '</td> <td>' + description + ' </td></tr>');
-            $('#recording-table tr:last').after('<tr class=\"tablerow\" id=\"tablerow-' + recording['id'] + '\"> <td>' + recording['title'] + '</td> <td>' + recording['about'] + ' </td> <td><a href=\"/' + recording['rec_file'] + '\">download</a></td> <td class=\"location\" id=\"locationcol-' + recording['id'] + '\">' +  recording['lat'] +', ' + recording['lon'] + ' </td> <td style=\"width:200px\"><a class=\"audioplayer-link\" audio-src=\"'+ recording['rec_file'] + '\" href=\"#\">Play</a></td><td>' + recording['date'] + ' <td><a class=\"org-approve\" id=\"approve-' + recording['id'] + '\" href=\"#\"><img src=\"{{STATIC_URL}}check_color.png\"/></a> <a class=\"org-flag\" id=\"flag-' + recording['id'] + '\" href=\"#\"><img src=\"{{STATIC_URL}}x_color.png\"/></a> </td></tr>');
+            $('#recording-table tr:last').after('<tr class=\"tablerow\" id=\"tablerow-' + recording['id'] + '\"> <td>' + recording['title'] + '</td> <td>' + recording['about'] + ' </td> <td><a href=\"/' + recording['rec_file'] + '\">download</a></td> <td class=\"location\" id=\"locationcol-' + recording['id'] + '\">' +  recording['lat'] +', ' + recording['lon'] + ' </td> <td style=\"width:200px\"><a class=\"audioplayer-link\" audio-src=\"'+ recording['rec_file'] + '\" href=\"#\">Play</a></td><td>' + recording['date'] + ' <td><a class=\"org-approve\" id=\"approve-' + recording['id'] + '\" href=\"#\"><img src=\"/static/check_color.png\"/></a> <a class=\"org-flag\" id=\"flag-' + recording['id'] + '\" href=\"#\"><img src=\"/static/x_color.png\"/></a> </td></tr>');
 
             
 
