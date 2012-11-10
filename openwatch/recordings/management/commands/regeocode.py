@@ -10,7 +10,7 @@ class Command(BaseCommand):
     help = 'Re-geocode old Recordings'
 
     def handle(self, *args, **options):
-        recordings = Recording.objects.all()
+        recordings = Recording.objects.all().defer('rec_file')
 
         for recording in recordings:
             try:
