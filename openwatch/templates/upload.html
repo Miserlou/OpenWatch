@@ -1,7 +1,5 @@
 {% extends "header.html" %}
 
-{% load url from future %}
-
 {% block title %}Upload - {% endblock %}
 {% block bodyblock %}
 	<div id="page">
@@ -11,7 +9,7 @@
 				<h2 class="title"><a href="#">Upload Media</a></h2>
 				<div class="entry">
                 <p>No records are kept of IP addresses used for uploading or browsing this website. All uploads must be original and by uploading, you agree to release the work under a Creative-Commons-Attribution license so that it may be widely and freely distrubuted by anybody. <br /><br /> Thank you for your submissions.</p>
-                    <p><form enctype="multipart/form-data" action="{% url 'upload' %}" method="post">
+                    <p><form enctype="multipart/form-data" action="/upload/" method="post">
             {% csrf_token %}
 
 		<div class="fieldWrapper">

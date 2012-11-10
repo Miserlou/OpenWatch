@@ -1,7 +1,5 @@
 {% extends "header.html" %}
 
-{% load url from future %}
-
 {% block bodyblock %}
 	<div id="page">
 		<div id="content">
@@ -10,7 +8,7 @@
 				<h2 class="title"><a href="#">Upload Media</a></h2>
 				<p class="meta"><a href="#"><span class="date">...</span></a>&nbsp;<span class="links">
 				<div class="entry">
-                    <p><form enctype="multipart/form-data" action="{% url 'upload_no_captcha' %}" method="post">
+                    <p><form enctype="multipart/form-data" action="/uploadnocaptcha/" method="post">
     {% csrf_token %}
 
 		<div class="fieldWrapper">
