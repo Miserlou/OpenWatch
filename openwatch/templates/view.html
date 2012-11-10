@@ -7,6 +7,13 @@
 <div class="post">
 				<h2 class="title"><a href="#">{{recording.name}}</a></h2>
                 <p class="meta"><a href="#"><span class="date"></span></a>&nbsp;<span class="links">
+                {% if recording.approved %}
+                <!--
+                <div class="approval-status approved shadow">This recording is approved<br/><a class="explain-approval" href="#">What does this mean?</a></div>
+                -->
+                {% else %}
+                <div class="approval-status not-approved shadow">This recording is not approved<br/><!--<a class="explain-approval" href="#">What does this mean?</a>--></div>
+                {% endif %}
 				<div class="entry">
                     {% if recording.vimeo %}
                     <p><iframe src="http://player.vimeo.com/video/{{ recording.vimeo }}?color=ff000d" width="601" height="338" frameborder="0"></iframe></p>
@@ -25,8 +32,49 @@
                     {% endif %}
                     <p>&nbsp;&nbsp;&nbsp;&nbsp;{{ recording.public_description|safe }}
                     <p>Posted at: {{recording.date}}
+                {% if user.get_profile.can_moderate == true %}
+                {% if not recording.approved %}
+                <div class="recording-moderation-panel">
+                    <button class="approve-button" type="button">Approve</button>
+                </div>
+                {% endif %}
+                {% endif %}
 				</div>
 			</div>
 		</div>
 		<!-- end #content -->
+{% endblock %}
+
+{% block scripts %}
+{% if user.get_profile.can_moderate == true %}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.min.js"></script>
+<script type="text/javascript">
+
+jQuery(function($){
+    $('.approve-button').click(function(){
+        console.log("approving...");
+        $(".approve-button").html('Aproving...');
+        $('.approve-button').attr("disabled", "disabled");
+        
+        $.getJSON("/approve/{{recording.pk}}",function(json){
+                if(json['status'] === "success"){
+                    $(".approve-button").html('Approved!');
+                    $(".not-approved").fadeOut('fast', function(){
+                        $(".not-approved").removeClass('not-approved')
+                                          .addClass('approved')
+                                          .html('This recording is approved<br/><a class="explain-approval" href="#">What does this mean?')
+                                          .fadeIn('fast');
+                    });
+                }
+                else{
+                    $(".approve-button").html('Approved!');
+                }
+            
+            }); // end getJSON
+    }); // end click
+});
+
+</script>
+{% endif %}
+
 {% endblock %}

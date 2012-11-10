@@ -44,21 +44,35 @@ USE_I18N = True
 # calendars according to the current locale
 USE_L10N = True
 
+AUTH_PROFILE_MODULE = 'recordings.UserProfile'
+
 # Absolute path to the directory that holds media.
 # Example: "/home/media/media.lawrence.com/"
 MEDIA_ROOT = '/home/tuttle/Projects/openwatch/openwatch/static/'
+
+UPLOAD_ROOT = '/var/www/openwatch/uploads/'
+
 
 # URL that handles the media served from MEDIA_ROOT. Make sure to use a
 # trailing slash if there is a path component (optional in other cases).
 # Examples: "http://media.lawrence.com", "http://example.com/media/"
 MEDIA_URL = 'http://openwatch.net/static/'
 
-UPLOAD_ROOT = '/var/www/openwatch/uploads/'
+#UPLOAD_ROOT = '/var/www/openwatch/uploads/'
+#UPLOAD_ROOT = 'Users/davidbrodsky/Documents/django/OpenWatch_static/uploads'
 
+STATIC_URL = '/static/'
+#STATIC_ROOT = '/Users/davidbrodsky/Documents/django/OpenWatch_static'
+
+STATICFILES_DIRS = (
+    os.path.join(os.path.dirname(__file__), '../static/'),
+)
+
+# Deprecated setting
 # URL prefix for admin media -- CSS, JavaScript and images. Make sure to use a
 # trailing slash.
 # Examples: "http://foo.com/media/", "/media/".
-ADMIN_MEDIA_PREFIX = '/media/'
+#ADMIN_MEDIA_PREFIX = '/media/'
 
 # Make this unique, and don't share it with anybody.
 SECRET_KEY = '2f=jo^b+x)xu92a93wt3+d9drnzvp%=e&3um6ltw%o03cwn3v$'
@@ -75,7 +89,8 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
-    'django.middleware.csrf.CsrfResponseMiddleware',
+    # Not required with Django 1.4
+    #'django.middleware.csrf.CsrfResponseMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
 )
@@ -95,6 +110,7 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.sites',
     'django.contrib.messages',
+    'django.contrib.staticfiles',
     # Uncomment the next line to enable the admin:
      'django.contrib.admin',
     # Uncomment the next line to enable admin documentation:
@@ -109,12 +125,6 @@ INSTALLED_APPS = (
 
 CAPTCHA_FONT_SIZE = 42
 CAPTCHA_LETTER_ROTATION = None
-
-EMAIL_USE_TLS = True
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_HOST_USER = 'bigvagitabluntz420@gmail.com'
-EMAIL_HOST_PASSWORD = 'incangold'
-EMAIL_PORT = 587
 
 try:
     from local_settings import *

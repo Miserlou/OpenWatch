@@ -1,0 +1,2 @@
+ALTER table recordings_recording ADD lat real;
+ALTER table recordings_recording ADD lon real;

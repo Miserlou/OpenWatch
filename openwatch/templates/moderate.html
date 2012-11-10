@@ -10,23 +10,220 @@
 <meta name="viewport" content="width=768px, minimum-scale=1.0, maximum-scale=1.0" />
 <link rel="shortcut icon" type="image/x-icon" href="/static/favicon.ico">
 <title>OpenWatch Recordings</title> 
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.min.js"></script>
+<!--<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.min.js"></script>-->
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
 <script src="/static/jquery.fittext.js"></script>
 <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
-<link href="/static/style11.css" rel="stylesheet" type="text/css" media="screen" />
+<!--<link href="/static/bootstrap.min.css" rel="stylesheet" type="text/css" media="screen" /> -->
+<style>
+
+.table-striped tbody tr:nth-child(odd) td,
+.table-striped tbody tr:nth-child(odd) th {
+  background-color: #f9f9f9;
+}
+
+body {
+  margin: 0;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 14px;
+  line-height: 20px;
+  color: #000;
+  background-color: #FFF;
+}
+a {
+  color: #20357A;
+  text-decoration: none;
+}
+a:hover {
+  color: #005580;
+  text-decoration: underline;
+}
+
+td{
+  padding:5px;
+}
+
+.table-heading{
+  font-size:20px;
+  font-weight:bold;
+}
+table {
+  table-layout : fixed;
+  text-align:center;
+  border-spacing: 0;
+}
+.selected{
+  background-color:#FF0000;
+  font-weight:bold;
+  color:#FFF;
+}
+
+.mapAbout{
+  pointer-events:none;
+  position: relative;
+  z-index: 10;
+}
+
+.location{
+  display:none;
+}
+
+.audioplayer {
+  display:none;
+}
+
+.audioplayer-link{
+  width:200px;
+}
+
+audio {
+  width:200px;
+}
+</style>
 </head>
 <body style="height:100%; width:100%; margin: 0; padding: 0; overflow: hidden;">
 
 <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
 <script type="text/javascript" src="http://www.google.com/jsapi?key=ABQIAAAAp04yNttlQq-7b4aZI_jL5hQYPm-xtd00hTQOC0OXpAMO40FHAxQMnH50uBbWoKVHwgpklyirDEregg"></script>
 <script type="text/javascript" src="/static/markerclusterer_packed.js"></script>
-<div id="realmap" class="single_map" style="width:100%; height:100%; margin: 0 auto; padding: 0; position: relative;"></div>
+  <div id="realmap" class="single_map" style="display:inline-block; width:30%; height:100%; margin: 0 auto; padding: 0;"></div>
+  <div id="recording-view" style="display:inline-block; width:67%; height:100%; text-align:center; margin-left:auto; margin-right:auto; padding: 10px; vertical-align:top;">
+    <h2 style="display:inline-block;margin-bottom:0px;">New Recordings</h2>
+    <p><a href="/admin/recordings/recording/">Browse all recordings</a> | <a href="#" onclick="resetMap()">Reset Map</a> </p>
+    <div id="scroll-container" style="width:100%; height:100%; overflow:scroll;">
+    <table id="recording-table">
+      <tr class="table-heading" style="display:none;"><td>Title</td><td>Description</td><td>File</td><td><!--Audio Player--></td><td>Date</td><td><!--Moderation Widgets--></td></tr>
+    </table>
+    </div>
+    <div id="table-loading" style="width:100%; height:100%; display:none;">
+      <h1>Loading...</h1>
+    </div>
+  </div>
+  <img style="display:inline-block; position:absolute; z:10; top:2%; right:2%; width:120px"src="/static/logo.png"/>
+          <script>
+          var csrftoken = getCookie('csrftoken');
+          setupAjax();
+
+          // Show audio tag player when requested
+          // Showing all upfront occupies unecessary memory
+          $('#recording-table').on('click', '.audioplayer-link', function(e){
+            e.preventDefault();
+            console.log('play audio');
+            $(this).parent().html('<audio controls><source src = \"/' + $(this).attr('audio-src') + '\"></audio>');
+
+            
+          });
+
+          // Activate marker click event when corresponding table row clicked
+          $('#recording-table').on('click', '.tablerow', function(e){
+            // id is in format 'tablerow-#'
+            media_id = String($(this).attr('id').split('-')[1]);
+            // Center and Zoom map to corresponding marker
+            marker = markers[id_to_marker_map[media_id]];
+            google.maps.event.trigger(instance=marker, eventName='click');
+
+          });
+
+          // Approving logic
+          // set up approve click listener
+          $('#recording-table').on('click', '.org-approve', function(e){
+            e.preventDefault();
+            // id is in format 'approve-#'
+            media_id = String($(this).attr('id').split('-')[1]);
+            console.log("Org-approving " + media_id);
+            org_moderate(media_id, 1);
+          });
+
+          // Approving logic
+          // set up approve click listener
+          $('#recording-table').on('click', '.org-flag', function(e){
+            e.preventDefault();
+            // id is in format 'approve-#'
+            media_id = String($(this).attr('id').split('-')[1]);
+            console.log("Org-flagging " + media_id);
+            org_moderate(media_id, -1);
+          });
+
+            function org_moderate(media_id, value){
+            /*  Approves or Flags a recording
+
+                Args
+                  media_id: a Recording pk
+                  value: 1=Approve, -1=Flag
+
+            */
+              $.ajax({
+                  url: "/org-moderate/"+media_id,
+                  data: {'value': value},
+                  success: function(data){
+                    //console.log(data);
+                    if(data.status === 'success'){
+                      // remove recording from list
+                      $('#tablerow-' + media_id).slideUp('slow');
+
+                     lat_lon = $.trim($('#locationcol-' + media_id).html());
+                     lat_lon = lat_lon.split(',')
+                     lat = lat_lon[0];
+                     lon = lat_lon[1];
+                     console.log('Remove marker:');
+
+                      idx = id_to_marker_map[media_id]; // Find the index
+                      console.log(markers[idx]);
+                      markers[idx].setMap(null); // hide corresponding marker
+                    }
+                  },
+                  type: 'POST'
+              });
+
+            }
+
+            // set appropriate headers
+            // to comply with Django
+            // CSRF-Protection
+            function setupAjax(){
+              $.ajaxSetup({
+                    beforeSend: function(xhr, settings) {
+                        if (!(/^http:.*/.test(settings.url) || /^https:.*/.test(settings.url))) {
+                            // Only send the token to relative URLs i.e. locally.
+                            xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                        }
+                    }
+              });
+            }
+
+            function getCookie(name) {
+              var cookieValue = null;
+              if (document.cookie && document.cookie != '') {
+                  var cookies = document.cookie.split(';');
+                  for (var i = 0; i < cookies.length; i++) {
+                      var cookie = jQuery.trim(cookies[i]);
+                      // Does this cookie string begin with the name we want?
+                      if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                          cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                          break;
+                      }
+                  }
+              }
+              return cookieValue;
+          }
+          
+
+          </script>
 
           <script>
+
+          
 
           var map;
           var markers = [];
           var marker_ids = [];
+
+          // Dict of recording id -> index in markers of corresponding marker
+          var id_to_marker_map = {};
+
+          // Map Center if none provided
+          var default_center = new google.maps.LatLng(parseFloat(40.850891), parseFloat(-96.759121));
+
           var mcOptions;
           var markerCluster = new MarkerClusterer(map, markers);
           var tag = '';
@@ -74,7 +271,7 @@
               if(map.getBounds() != undefined){
                 bounds = map.getBounds();
               }
-              
+              /* Tag search not yet implemented
               if ($.trim($('#tagSearch').val().toLowerCase()).length < 1) {
                 if(map.getZoom() >= 6){
                     if(markers.length > 1300){
@@ -89,13 +286,14 @@
                     $('#showing').html("Searching..");
                     getDataPoints();
                   }
-              }
+              }*/
               lastZoom = map.getZoom();
               bounds = map.getBounds(); 
             });
 
             google.maps.event.addListener(map, 'dragend', function(){
                 bounds = map.getBounds(); 
+                /* Tag search not yet implemented 
                 if ($.trim($('#tagSearch').val().toLowerCase()).length < 1) {
                   //if(map.getZoom() > 7){
                       if(markers.length > 1000){
@@ -104,7 +302,7 @@
                       $('#showing').html("Searching..");
                       getDataPoints();
                   //}
-                }
+                } */
             });
 
             google.maps.event.addListener(map, 'bounds_changed', function(){
@@ -133,6 +331,30 @@
             marker_ids = [];
           }
 
+          function listRecording(recording){
+            // plotJob will take care of not listing duplicates
+
+            console.log('listing recording!');
+            // Data to populate UI with
+            /*
+            title = recording['title'];
+            description = recording['about'];
+            file = recording['rec_file'];
+            id = recording['id'];
+            //url = recording['url'];
+            fprint = recording['fprint'];
+            location = String(recording['lat'] + ', ' + String(recording['lon']));
+
+            // Table Format:
+            // Title | Desc | file | location
+            */
+            //$('#recording-table tr:last').after('<tr> <td>' + title + '</td> <td>' + description + ' </td></tr>');
+            $('#recording-table tr:last').after('<tr class=\"tablerow\" id=\"tablerow-' + recording['id'] + '\"> <td>' + recording['title'] + '</td> <td>' + recording['about'] + ' </td> <td><a href=\"/' + recording['rec_file'] + '\">download</a></td> <td class=\"location\" id=\"locationcol-' + recording['id'] + '\">' +  recording['lat'] +', ' + recording['lon'] + ' </td> <td style=\"width:200px\"><a class=\"audioplayer-link\" audio-src=\"'+ recording['rec_file'] + '\" href=\"#\">Play</a></td><td>' + recording['date'] + ' <td><a class=\"org-approve\" id=\"approve-' + recording['id'] + '\" href=\"#\"><img src=\"{{STATIC_URL}}check_color.png\"/></a> <a class=\"org-flag\" id=\"flag-' + recording['id'] + '\" href=\"#\"><img src=\"{{STATIC_URL}}x_color.png\"/></a> </td></tr>');
+
+            
+
+          }
+
           function plotJob(job){
 
             if($.inArray(job['id'], marker_ids) >= 0){
@@ -146,18 +368,30 @@
               map: map,
               draggable: false
             });
-
             markers.push(marker);
             marker_ids.push(job['id']);
+            id_to_marker_map[job['id']] = markers.indexOf(marker);
 
             marker.str =
-              "<div class='mapInfo'><h1>" + job['title'] + "</h1><p><h2>" + job['about'] + "</h2>" + "<p><audio id='audio1' controls><source src = '/" + job['rec_file'] + "'></audio><br /><br /><p><a href='/" + job['rec_file'] + "'>Download file!</a><p><i>..or..</i><p><a href='/view/" + job['id'] +"' target='_blank'>View recording</a>.<p>Location: <i>" + job['location'] +"</i></div>";
-            marker.shrt =  "<div class='mapInfo'><h1>" + job['title'] + "</h1><h2>" + job['about'] + "</h2>" +  "<h4>More Information</h4><i><b>Click</b> on the <b>pin</b> for more information!</i><p><center><b></b></center><br /></div>";
-            marker.url = job['url'];
-            marker.fprint = job['fprint'];
+              "<div class='mapInfo'><h1>" + job['title'] + "</h1><p><h2>" + job['about'] + "</h2>" + "<p><a href='/" + job['rec_file'] + "'>Download file!</a><p><i>..or..</i><p><a href='/view/" + job['id'] +"' target='_blank'>View recording</a>.<p>Location: <i>" + job['location'] +"</i>";
+
+            if(job['email'] != "" && job['email'] != undefined){
+              marker.str += "<p><a href=\"mailto:" + job['email']+"\">Email Submitter</a></p>";
+            }
+            marker.str += "</div>";
+            marker.shrt =  "<div class='mapInfo'><h1>" + job['title'] + "</h1><h2>" + job['about'] + "</h2>" +  "<br/><i><b>Click</b> on the <b>pin</b> for more information!</i><p><center><b></b></center><br /></div>";
 
             google.maps.event.addListener(marker, 'click', function () {
-              
+              // Highlight the corresponding table row
+              $('.tablerow').removeClass('selected');
+              $('#tablerow-' + job['id']).addClass('selected');
+
+              console.log($('#tablerow-' + job['id']).offset().top);
+
+              $('#scroll-container').animate({
+                scrollTop: $('#tablerow-' + job['id']).offset().top - $('#scroll-container').offset().top + $('#scroll-container').scrollTop()
+              }, 500);
+
               if(map.getZoom() < 9){
                 infowindow.close(map, this);
                 map.setZoom(13);
@@ -173,13 +407,13 @@
                  openWindow = true;
                  //window.open(marker.url, '_newtab' + marker.fprint);
               }
-
-              map.setCenter(this.getPosition());
+              centerMapWithOffset(map, marker);
                 infowindow.setContent(marker.str);
                 infowindow.open(marker.getMap(), this);
               });
 
             google.maps.event.addListener(marker, 'mouseover', function () {
+
               if(!openWindow){
                   infowindow.setContent(marker.shrt);
                   infowindow.open(marker.getMap(), this);
@@ -188,6 +422,9 @@
 
             google.maps.event.addListener(marker, 'mouseout', function () {
               if(!openWindow){
+                  // Remove table row highlighting on mouseout only if
+                  // popup Window has been closed
+                  $('.tablerow').removeClass('selected');
                   infowindow.close(marker.getMap(), this);
               }
             });
@@ -197,8 +434,10 @@
           }
 
           function getDataPoints(search){
-
-            var url = '/map/api/';
+            // ending 1 indicates to the api that we are moderating
+            // this causes the returned data points to be filtered
+            // by the user's organizational tags and the org_approved boolean
+            var url = '/map/api/moderate';
             if (typeof search != 'undefined'){
               url = url + search + '/';
               tag = search;
@@ -206,7 +445,7 @@
             else{
               tag = '';
             }
-
+            /* Location querying not yet implemented
             {% if location %}
             if(first){
               url = url + bounds[0]+ '/' + bounds[1]+ '/' + bounds[2]+ '/' + bounds[3] + '/';
@@ -224,7 +463,7 @@
                 url = url + boundries[0]+ '/' + boundries[1]+ '/' + boundries[2]+ '/' + boundries[3] + '/';
               }
             {% endif %}
-
+            */
             if(req != undefined){
               req.abort();
             }
@@ -235,6 +474,7 @@
                 for(var i=0; i<p.length; i++){
                   job = p[i];
                   plotJob(job);
+                  listRecording(job);
                 }
 
                 if(tag == ''){
@@ -248,23 +488,31 @@
                   $('#showing').html("Showing " + markers.length + " " + tag + " recordings." + sm);
                 }
 
-                $('#loading').hide();
+                //$('#loading').hide();
+                $('#table-loading').fadeOut('slow', function(){
+                  $('.table-heading').fadeIn('slow');
+                  $('#scroll-container').fadeIn('slow');
+
+                });
+                
+                
             });
           }
       </script>
       <script>
         //onload
         jQuery(function($){
-
+          $('#scroll-container').hide();
+          $('#table-loading').fadeIn('slow');
           {% if location %}
               var visitorLocation = new google.maps.LatLng(parseFloat({{location.lat}}), parseFloat({{location.lon}}));
               bounds = [{{location.lat|add:1}}, {{location.lon|add:1}}, {{location.lat|add:-1}}, {{location.lon|add:-1}}];
               displayMap({{location.lat}},{{location.lon}});
               map.setCenter(visitorLocation);
-              map.setZoom(12);
-              //getDataPoints();
+              map.setZoom(9);
+              getDataPoints();
           {% else %}
-                displayMap(40.850891,-96.759121);
+                displayMap(default_center.lat(),default_center.lng());
                 getDataPoints();
                 map.setZoom(5);
           {% endif %}
@@ -291,13 +539,40 @@
           */
 
         });
-      </script>
 
+
+        // Restores map to original centering and zoom level
+        function resetMap(){
+          {% if location %}
+          var visitorLocation = new google.maps.LatLng(parseFloat({{location.lat}}), parseFloat({{location.lon}}));
+              bounds = [{{location.lat|add:1}}, {{location.lon|add:1}}, {{location.lat|add:-1}}, {{location.lon|add:-1}}];
+              displayMap({{location.lat}},{{location.lon}});
+              map.setCenter(visitorLocation);
+          {% else %}
+              map.setCenter(default_center);
+          {% endif %}
+              map.setZoom(9);
+
+        }
+
+        // Centers map on marker, adding a 
+        // latitude offset to ensure popup window isn't obscured
+        function centerMapWithOffset(map, marker){
+          // let's set the position a fixed distance above
+          // that marker so the popup window isn't obscured
+          lat_offset = .015;
+          centerLatLng = new google.maps.LatLng(lat=marker.getPosition().lat() + lat_offset,lng=marker.getPosition().lng());
+
+          map.setCenter(centerLatLng);
+        }
+
+      </script>
+<!--
     <div class="mapAbout">
       <p><h1 class="mapAbout" id="ma1">Police Encounters</h1></p>
       <p><h2 class="mapAbout" id="ma2">by OpenWatch.net</h2></p>
     </div>
-
+-->
     <script>
 
       function keyDown(myfield, e){
@@ -335,7 +610,8 @@
 
   <div class="mapHolder">
 
-    <div class="mapSearch">
+<!-- TODO: Tag search API endpoint
+    <div class="mapSearch" >
           <p><form method="GET" autocomplete="off"><input id="tagSearch" class="mapAbout" type="text" name="" placeholder="Search tags!" onKeyUp="return submitter(this,event)" onKeyDown="return keyDown(this,event)" /></form></p>
 
           <p><span id="showing">Loading recordings.. </span> ({{total}} total.)
@@ -352,7 +628,7 @@
     <div class="mapSearch" id="loading" style="top: 50%; font-size: 3em;">
           <center><b>Loading recordings..</b></center>
     </div>
-
+-->
 
     <script>
       $("#ma1").fitText();
@@ -374,11 +650,12 @@
       $("#hi2").fitText();
     </script>
 
+<!--
     <div class="mapSignup">
-      <p id="si1">Zoom in<br/>
+      <p id="si1">Zoom and search<br/>
       to see more recordings!<br />
     </div>
-
+-->
     <script>
       $("#si1").fitText();
     </script>
