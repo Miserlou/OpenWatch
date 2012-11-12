@@ -21,6 +21,7 @@ class Command(BaseCommand):
                     recording.lat = latlon[0].strip()
                     recording.lon = latlon[1].strip()
                     recording.save()
+                    recording.rec_file.close()
             except Exception, e:
                 print e
                 continue
