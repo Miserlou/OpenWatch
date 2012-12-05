@@ -94,8 +94,8 @@ class Command(BaseCommand):
                 f.private_word_count = priv_word_count
                 f.private_actual_word_count = priv_actual_word_count
                 f.title = recording.name
-                f.description = recording.public_description
-                f.private = recording.private_description
+                f.description = recording.public_description[:199]
+                f.private = recording.private_description[:199]
                 f.file_type = file_type[0]
                 f.is_test = is_test
                 f.verified = False
