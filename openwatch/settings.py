@@ -120,7 +120,8 @@ INSTALLED_APPS = (
      'openwatch.recordings',
      'openwatch.blog',
      'openwatch.misc',
-     'openwatch.map'
+     'openwatch.map',
+     'openwatch.learning'
 )
 
 CAPTCHA_FONT_SIZE = 42
