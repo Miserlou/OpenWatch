@@ -85,6 +85,7 @@ class Command(BaseCommand):
 
                 f = FeatureSet()
                 f.rec = recording
+                f.file_size = str(os.stat(f_path).st_size)
                 f.num_minutes = minutes
                 f.has_location = has_location
                 f.title_word_count = title_word_count
